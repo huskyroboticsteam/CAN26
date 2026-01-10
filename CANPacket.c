@@ -112,7 +112,7 @@ uint8_t *CANGetData(CANPacket_t *packet) {
 }
 
 /**
- * Returns the 32 bit unsigned value contained at the given location
+ * Returns the 32 bit unsigned value stored at the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 uint32_t CANLoadUInt32(uint8_t *ptr) {
@@ -125,7 +125,7 @@ uint32_t CANLoadUInt32(uint8_t *ptr) {
 }
 
 /**
- * Returns the 32 bit signed value contained at the given location
+ * Returns the 32 bit signed value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 int32_t CANLoadInt32(uint8_t *ptr) {
@@ -133,7 +133,7 @@ int32_t CANLoadInt32(uint8_t *ptr) {
 }
 
 /**
- * Returns the 24 bit unsigned value contained at the given location
+ * Returns the 24 bit unsigned value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 uint32_t CANLoadUInt24(uint8_t *ptr) {
@@ -141,7 +141,7 @@ uint32_t CANLoadUInt24(uint8_t *ptr) {
 }
 
 /**
- * Returns the 24 bit unsigned value contained at the given location
+ * Returns the 24 bit unsigned value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  * The value is sign extended to 32 bits
  */
@@ -154,7 +154,7 @@ int32_t CANLoadInt24(uint8_t *ptr) {
 }
 
 /**
- * Returns the 16 bit unsigned value contained at the given location
+ * Returns the 16 bit unsigned value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 uint16_t CANLoadUInt16(uint8_t *ptr) {
@@ -167,7 +167,7 @@ uint16_t CANLoadUInt16(uint8_t *ptr) {
 }
 
 /**
- * Returns the 16 bit signed value contained at the given location
+ * Returns the 16 bit signed value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 int16_t CANLoadInt16(uint8_t *ptr) {
@@ -175,7 +175,7 @@ int16_t CANLoadInt16(uint8_t *ptr) {
 }
 
 /**
- * Returns the 32 bit float value contained at the given location
+ * Returns the 32 bit float value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  * Assumes floats are 4 bytes in size
  * Assumes all parties use IEEE 754 single precision floats
@@ -189,7 +189,7 @@ float CANLoadFloat32(uint8_t *ptr) {
 }
 
 /**
- * Returns the 24 bit float value contained at the given location
+ * Returns the 24 bit float value stored in the given memory location
  * The 24 bit floats are truncated 32 bit floats
  * Enforces LE and the location is allowed to be misaligned
  * Assumes floats are 4 bytes in size
@@ -204,7 +204,7 @@ float CANLoadBFloat24(uint8_t *ptr) {
 }
 
 /**
- * Returns the 16 bit brain float value contained at the given location
+ * Returns the 16 bit brain float value stored in the given memory location
  * 16 bit brain floats are truncated 32 bit floats
  * Enforces LE and the location is allowed to be misaligned
  * Assumes floats are 4 bytes in size
@@ -219,7 +219,7 @@ float CANLoadBFloat16(uint8_t *ptr) {
 }
 
 /**
- * Returns the 16 bit float value contained at the given location
+ * Returns the 16 bit float value stored in the given memory location
  * 16 bit floats are IEEE 754 half precision floats
  * Correctly handles subnormals
  * Enforces LE and the location is allowed to be misaligned
@@ -265,7 +265,7 @@ float CANLoadUNorm24(uint8_t *ptr) {
 }
 
 /**
- * Returns the 16 bit unsigned normalized value contained at the given location
+ * Returns the 16 bit unsigned normalized value stored in the given memory location
  * 16 bit UNorm values map the range 0-65535 to the range 0.0-1.0
  * Enforces LE and the location is allowed to be misaligned
  */
@@ -275,7 +275,7 @@ float CANLoadUNorm16(uint8_t *ptr) {
 }
 
 /**
- * Returns the 8 bit unsigned normalized value contained at the given location
+ * Returns the 8 bit unsigned normalized value stored in the given memory location
  * 8 bit UNorm values map the range 0-255 to the range 0.0-1.0
  */
 float CANLoadUNorm8(uint8_t *ptr) {
@@ -283,7 +283,7 @@ float CANLoadUNorm8(uint8_t *ptr) {
 }
 
 /**
- * Stores a 32 bit unsigned integer into the given location
+ * Stores a 32 bit unsigned integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 void CANStoreUInt32(uint8_t *ptr, uint32_t value) {
@@ -294,7 +294,7 @@ void CANStoreUInt32(uint8_t *ptr, uint32_t value) {
 }
 
 /**
- * Stores a 32 bit signed integer into the given location
+ * Stores a 32 bit signed integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 void CANStoreInt32(uint8_t *ptr, int32_t value) {
@@ -302,7 +302,7 @@ void CANStoreInt32(uint8_t *ptr, int32_t value) {
 }
 
 /**
- * Stores a 24 bit unsigned integer into the given location
+ * Stores a 24 bit unsigned integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  * Ignores the upper 8 bits of the 32 bit value
  * Assumes sizeof(int32_t) == 4
@@ -315,7 +315,7 @@ void CANStoreUInt24(uint8_t *ptr, int32_t value) {
 }
 
 /**
- * Stores a 24 bit signed integer into the given location
+ * Stores a 24 bit signed integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  * Ignores the upper 8 bits of the 32 bit value
  * Assumes sizeof(int32_t) == 4
@@ -325,7 +325,7 @@ void CANStoreInt24(uint8_t *ptr, int32_t value) {
 }
 
 /**
- * Stores a 16 bit unsigned integer into the given location
+ * Stores a 16 bit unsigned integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 void CANStoreUInt16(uint8_t *ptr, uint16_t value) {
@@ -336,7 +336,7 @@ void CANStoreUInt16(uint8_t *ptr, uint16_t value) {
 }
 
 /**
- * Stores a 16 bit signed integer into the given location
+ * Stores a 16 bit signed integer into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
 void CANStoreInt16(uint8_t *ptr, int16_t value) {
@@ -344,7 +344,7 @@ void CANStoreInt16(uint8_t *ptr, int16_t value) {
 }
 
 /**
- * Stores a 32 bit float into the given location
+ * Stores a 32 bit float into the given memory location
  * Enforces LE and the location is allowed to be misaligned
  * Assumes sizeof(float) == sizeof(uint32_t)
  * Assumes all parties use IEEE 754 single precision floats
@@ -357,7 +357,7 @@ void CANStoreFloat32(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores a 24 bit float into the given location
+ * Stores a 24 bit float into the given memory location
  * The 24 bit float is a truncated IEEE 754 single precision float
  * Non standard float format
  * Uses the round to nearest (ties away from 0) rounding mode
@@ -375,7 +375,7 @@ void CANStoreBFloat24(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores a 16 bit brain float into the given location
+ * Stores a 16 bit brain float into the given memory location
  * Brain floats are truncated IEEE 754 single precision floats
  * Uses the round to nearest (ties away from 0) rounding mode
  * Clamps out of range values
@@ -392,7 +392,7 @@ void CANStoreBFloat16(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores a 16 bit float into the given location
+ * Stores a 16 bit float into the given memory location
  * 16 bit floats are IEEE 754 half precision floats
  * Uses the round to nearest (ties away from 0) rounding mode
  * Enforces LE and the location is allowed to be misaligned
@@ -441,7 +441,7 @@ void CANStoreFloat16(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores a 24 bit unsigned normalized value into the given location
+ * Stores a 24 bit unsigned normalized value into the given memory location
  * 24 bit UNorms map the range 0x000000-0xFFFFFF into the range 0.0-1.0
  * Rounds to nearest representable value, with ties away from 0
  * Clamps out of range values
@@ -461,7 +461,7 @@ void CANStoreUNorm24(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores a 16 bit unsigned normalized value into the given location
+ * Stores a 16 bit unsigned normalized value into the given memory location
  * 16 bit UNorms map the range 0-65535 into the range 0.0-1.0
  * Rounds to nearest representable value, with ties away from 0
  * Clamps out of range values
@@ -481,7 +481,7 @@ void CANStoreUNorm16(uint8_t *ptr, float value) {
 }
 
 /**
- * Stores an 8 bit unsigned normalized value into the given location
+ * Stores an 8 bit unsigned normalized value into the given memory location
  * 8 bit UNorms map the range 0-255 into the range 0.0-1.0
  * Rounds to nearest representable value, with ties away from 0
  * Clamps out of range values
