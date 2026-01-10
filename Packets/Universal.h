@@ -25,6 +25,20 @@ inline static CANPacket_t CANUniversalPacket_EStop(CANDeviceUUID_t sender, CANDe
 }
 
 /**
+ * Returns a packet that represents a general acknowledgement
+ * Should be sent when an acknowledgment was requested but no specific acknowledge packet exists
+ */
+inline static CANPacket_t CANUniversalPacket_Acknowledge(CANDeviceUUID_t sender, CANDevice_t device, bool failure) {
+    return (CANPacket_t){
+        .device = device,
+        .contentsLength = 1,
+        .command = CAN_PACKET_ID__ACKNOWLEDGE,
+        .senderUUID = sender,
+        .contents = {failure}
+    };
+}
+
+/**
  * Returns a packet to query the firmware version from the given device
  * Packet is automatically set to acknowledge
  *
