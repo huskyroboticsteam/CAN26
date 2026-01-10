@@ -255,6 +255,16 @@ float CANLoadFloat16(uint8_t *ptr) {
 }
 
 /**
+ * Returns the 24 bit unsigned normalized value stored at the given memory location
+ * 24 bit UNorm values map the range 0x000000-0xFFFFFF to the range 0.0-1.0
+ * Enforces LE and the location is allowed to be misaligned
+ */
+float CANLoadUNorm24(uint8_t *ptr) {
+    uint32_t intVal = CANLoadUInt24(ptr);
+    return intVal / 16777215.0f;
+}
+
+/**
  * Returns the 16 bit unsigned normalized value contained at the given location
  * 16 bit UNorm values map the range 0-65535 to the range 0.0-1.0
  * Enforces LE and the location is allowed to be misaligned
