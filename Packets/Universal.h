@@ -1,11 +1,19 @@
 #pragma once
 
+/**
+ * This file contains helper functions to construct packets from the Universal set of packets
+ * These Universal packets must be supported by all devices on the CAN network
+ */
+
 #include "../CANPacket.h"
 #include "../CANPacketIDs.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * Returns an emergency stop packet designed to be sent to the given device
+ */
 inline static CANPacket_t CANUniversalPacket_EStop(CANDeviceUUID_t sender, CANDevice_t device) {
     return (CANPacket_t){
         .device = device,
@@ -16,6 +24,13 @@ inline static CANPacket_t CANUniversalPacket_EStop(CANDeviceUUID_t sender, CANDe
     };
 }
 
+/**
+ * Returns a packet to query the firmware version from the given device
+ * Packet is automatically set to acknowledge
+ *
+ * The firmware version of a device consists of a 16 bit unsigned int alongside a string that is up to 4 bytes long
+ * The int should be updated whenever the firmware is updated
+ */
 inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDeviceUUID_t sender, CANDevice_t device) {
     return (CANPacket_t){
         .device = device,
@@ -25,7 +40,12 @@ inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDeviceUUID_t 
     };
 }
 
-// Firmware version is a 16 bit unsigned int + an up to 4 byte long string (eg. odrv v312 for odrive, stpr v4 or something for stepper)
+/**
+ * Returns a packet that encodes the firmware version
+ * Should be sent as a response to a GetFirmwareVersion packet
+ *
+ * Firmware version is a 16 bit unsigned int + a string up to 4 bytes long (eg. odrv v312 for odrive, stpr v4 or something for stepper)
+ */
 inline static CANPacket_t CANUniversalPacket_FirmwareVersion(CANDeviceUUID_t sender, CANDevice_t device, const char *name, uint16_t versionID) {
     size_t nameLength = strlen(name);
     if (nameLength > 4) nameLength = 4;
