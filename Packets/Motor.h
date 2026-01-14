@@ -154,6 +154,22 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDeviceUUID_t sender,
 }
 
 /**
+ * Constructs a packet intended as a response to a CANMotorPacket_BLDC_DirectRead
+ * Contains the value of the ODrive register that the read was requested from, as well as the endpoint it was requested from
+ * The endpoint is sent to ensure ordering in case multiple requests were sent that got reordered for some reason
+ */
+inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDeviceUUID_t sender, CANDevice_t device, uint16_t endpointID, uint32_t value) {
+    CANPacket_t result = {
+        .device = device,
+        .contentsLength = 6,
+        .command = CAN_PACKET_ID__BLDC_DIRECT_READ_RESULT,
+        .senderUUID = sender
+    };
+    CANStoreUInt16(result.contents + 0, endpointID);
+    CANStoreUInt32(result.contents + 2, value);
+}
+
+/**
  * Constructs a packet to request encoder estimates from the device
  * encoderID is the encoder to read from
  *
