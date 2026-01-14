@@ -167,6 +167,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDeviceUUID_t s
     };
     CANStoreUInt16(result.contents + 0, endpointID);
     CANStoreUInt32(result.contents + 2, value);
+    return result;
 }
 
 /**
