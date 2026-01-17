@@ -4,7 +4,7 @@
 
 // There may be a cleaner way to do these tests this was the most compatible way I could devise
 // Obviously on any optimization level other than O0 this gets optimized away
-// Done to ensure that the pointer casts don't break things in any reasonable environment
+// Done to ensure that the memcpys don't break things in any reasonable environment
 
 /**
  * Indicates if bit fields are ordered from lsb to msb (generally true on LE architectures)
@@ -72,7 +72,7 @@ inline static uint8_t clz16(uint16_t input) {
 #endif
 
 /**
- * Serialized the CANPacket destination device and priority
+ * Serializes the CANPacket destination device and priority
  * Result is to be used in the 11 bit portion of the protocol
  *
  * The packet pointer is assumed to be a valid packet
