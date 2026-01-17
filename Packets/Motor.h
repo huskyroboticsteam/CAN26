@@ -2,7 +2,6 @@
 
 /**
  * This file consists of helper functions for packet types from the Motor domain
- * All devices within the motor domain must support all of these packet types
  */
 
 #include <stdbool.h>
@@ -14,6 +13,7 @@
 
 /**
  * Constructs a packet to send an update from a limit switch to the given device
+ * Limit switch alerts should be repeatedly sent at some interval of time
  */
 inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDeviceUUID_t sender, CANDevice_t device, uint8_t motorId, bool switchStatus) {
     return (CANPacket_t){
@@ -31,7 +31,7 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDeviceUUID_t sender
 
 /**
  * Constructs a packet to tell a stepper motor to move a given number of revolutions from the current position
- * Positive number of revolutions is clockwise, negative number is counter-clockwise
+ * Positive number of revolutions should be clockwise, negative number should be counter-clockwise
  */
 inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDeviceUUID_t sender, CANDevice_t device, float numRevolutions) {
     CANPacket_t result = {
