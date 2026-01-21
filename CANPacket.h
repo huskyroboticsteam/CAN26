@@ -45,9 +45,6 @@ typedef uint8_t CANCommand_t;
  */
 typedef uint8_t CANDeviceUUID_t;
 
-// UUID to broadcast to all can devices with the set domain bits
-#define CAN_UUID_BROADCAST ((CANDeviceUUID_t)0x00)
-
 /**
  * Used to turn a command id into its corresponding command with acknowledgement request
  * Bitwise ORing a command with 0x80 (ack) will request a response
