@@ -47,7 +47,7 @@ uint8_t *CANGetData(CANPacket_t *packet) {
  * Returns the 32 bit unsigned value stored at the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
-uint32_t CANLoadUInt32(uint8_t *ptr) {
+uint32_t CANLoadUInt32(const uint8_t *ptr) {
     uint32_t result;
     memcpy(&result, ptr, sizeof(uint32_t));
     if (!little_endian()) {
@@ -60,7 +60,7 @@ uint32_t CANLoadUInt32(uint8_t *ptr) {
  * Returns the 32 bit signed value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
-int32_t CANLoadInt32(uint8_t *ptr) {
+int32_t CANLoadInt32(const uint8_t *ptr) {
     return (int32_t)CANLoadUInt32(ptr);
 }
 
@@ -68,7 +68,7 @@ int32_t CANLoadInt32(uint8_t *ptr) {
  * Returns the 24 bit unsigned value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
-uint32_t CANLoadUInt24(uint8_t *ptr) {
+uint32_t CANLoadUInt24(const uint8_t *ptr) {
     return ptr[2] << 16 | ptr[1] << 8 | ptr[0];
 }
 
@@ -77,7 +77,7 @@ uint32_t CANLoadUInt24(uint8_t *ptr) {
  * Enforces LE and the location is allowed to be misaligned
  * The value is sign extended to 32 bits
  */
-int32_t CANLoadInt24(uint8_t *ptr) {
+int32_t CANLoadInt24(const uint8_t *ptr) {
     uint32_t zeroExtended = CANLoadUInt24(ptr);
     uint32_t negative = -(zeroExtended & 0x800);
     // Sign extended upper bits of the result
@@ -89,7 +89,7 @@ int32_t CANLoadInt24(uint8_t *ptr) {
  * Returns the 16 bit unsigned value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
-uint16_t CANLoadUInt16(uint8_t *ptr) {
+uint16_t CANLoadUInt16(const uint8_t *ptr) {
     uint16_t result;
     memcpy(&result, ptr, sizeof(uint16_t));
     if (!little_endian()) {
@@ -102,7 +102,7 @@ uint16_t CANLoadUInt16(uint8_t *ptr) {
  * Returns the 16 bit signed value stored in the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */
-int16_t CANLoadInt16(uint8_t *ptr) {
+int16_t CANLoadInt16(const uint8_t *ptr) {
     return (int16_t)CANLoadUInt16(ptr);
 }
 
@@ -113,7 +113,7 @@ int16_t CANLoadInt16(uint8_t *ptr) {
  * Assumes all parties use IEEE 754 single precision floats
  * Assumes floats use the same endianness as ints
  */
-float CANLoadFloat32(uint8_t *ptr) {
+float CANLoadFloat32(const uint8_t *ptr) {
     uint32_t intVal = CANLoadUInt32(ptr);
     float floatVal;
     memcpy(&floatVal, &intVal, sizeof(float));
@@ -128,7 +128,7 @@ float CANLoadFloat32(uint8_t *ptr) {
  * Assumes all parties use IEEE 754 single precision floats
  * Assumes floats use the same endianness as ints
  */
-float CANLoadBFloat24(uint8_t *ptr) {
+float CANLoadBFloat24(const uint8_t *ptr) {
     uint32_t intVal = CANLoadUInt24(ptr) << 8;
     float floatVal;
     memcpy(&floatVal, &intVal, sizeof(float));
@@ -143,7 +143,7 @@ float CANLoadBFloat24(uint8_t *ptr) {
  * Assumes all parties use IEEE 754 single precision floats
  * Assumes floats use the same endianness as ints
  */
-float CANLoadBFloat16(uint8_t *ptr) {
+float CANLoadBFloat16(const uint8_t *ptr) {
     uint32_t intVal = (uint32_t)CANLoadUInt16(ptr) << 16;
     float floatVal;
     memcpy(&floatVal, &intVal, sizeof(float));
@@ -159,7 +159,7 @@ float CANLoadBFloat16(uint8_t *ptr) {
  * Assumes all parties use IEEE 754 single precision floats
  * Assumes floats use the same endianness as ints
  */
-float CANLoadFloat16(uint8_t *ptr) {
+float CANLoadFloat16(const uint8_t *ptr) {
     uint16_t intVal = CANLoadUInt16(ptr);
     int16_t exp = ((intVal & 0x7C00) >> 10) - 15;
     uint8_t sign = intVal >= 0x8000;
@@ -191,7 +191,7 @@ float CANLoadFloat16(uint8_t *ptr) {
  * 24 bit UNorm values map the range 0x000000-0xFFFFFF to the range 0.0-1.0
  * Enforces LE and the location is allowed to be misaligned
  */
-float CANLoadUNorm24(uint8_t *ptr) {
+float CANLoadUNorm24(const uint8_t *ptr) {
     uint32_t intVal = CANLoadUInt24(ptr);
     return intVal / 16777215.0f;
 }
@@ -201,7 +201,7 @@ float CANLoadUNorm24(uint8_t *ptr) {
  * 16 bit UNorm values map the range 0-65535 to the range 0.0-1.0
  * Enforces LE and the location is allowed to be misaligned
  */
-float CANLoadUNorm16(uint8_t *ptr) {
+float CANLoadUNorm16(const uint8_t *ptr) {
     uint16_t intVal = CANLoadUInt16(ptr);
     return intVal / 65535.0f;
 }
@@ -210,7 +210,7 @@ float CANLoadUNorm16(uint8_t *ptr) {
  * Returns the 8 bit unsigned normalized value stored in the given memory location
  * 8 bit UNorm values map the range 0-255 to the range 0.0-1.0
  */
-float CANLoadUNorm8(uint8_t *ptr) {
+float CANLoadUNorm8(const uint8_t *ptr) {
     return *ptr / 255.0f;
 }
 

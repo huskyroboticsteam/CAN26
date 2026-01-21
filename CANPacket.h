@@ -136,24 +136,24 @@ uint8_t *CANGetData(CANPacket_t *packet);
  * All data is little endian
  */
 
-uint32_t CANLoadUInt32(uint8_t *ptr);
-int32_t CANLoadInt32(uint8_t *ptr);
+uint32_t CANLoadUInt32(const uint8_t *ptr);
+int32_t CANLoadInt32(const uint8_t *ptr);
 
-uint32_t CANLoadUInt24(uint8_t *ptr);
-int32_t CANLoadInt24(uint8_t *ptr);
+uint32_t CANLoadUInt24(const uint8_t *ptr);
+int32_t CANLoadInt24(const uint8_t *ptr);
 
-uint16_t CANLoadUInt16(uint8_t *ptr);
-int16_t CANLoadInt16(uint8_t *ptr);
+uint16_t CANLoadUInt16(const uint8_t *ptr);
+int16_t CANLoadInt16(const uint8_t *ptr);
 
-float CANLoadFloat32(uint8_t *ptr);
-float CANLoadFloat16(uint8_t *ptr);
+float CANLoadFloat32(const uint8_t *ptr);
+float CANLoadFloat16(const uint8_t *ptr);
 
-float CANLoadBFloat24(uint8_t *ptr);
-float CANLoadBFloat16(uint8_t *ptr);
+float CANLoadBFloat24(const uint8_t *ptr);
+float CANLoadBFloat16(const uint8_t *ptr);
 
-float CANLoadUNorm24(uint8_t *ptr);
-float CANLoadUNorm16(uint8_t *ptr);
-float CANLoadUNorm8(uint8_t *ptr);
+float CANLoadUNorm24(const uint8_t *ptr);
+float CANLoadUNorm16(const uint8_t *ptr);
+float CANLoadUNorm8(const uint8_t *ptr);
 
 // Functions for writing packet data
 
