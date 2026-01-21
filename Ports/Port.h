@@ -19,7 +19,7 @@ typedef void* CAN_Handle_t;
  * @param CANDevice This device's UUID and domain bits.
  * @return 0 for succesful setup, error codes otherwise.
  */
-uint8_t CAN26_Init(CAN_Handle_t CANHandle, CANDevice_t *device);
+uint8_t CANInit(CAN_Handle_t CANHandle, CANDevice_t *device);
 
 /**
  *  Send a CAN Packet for hardware transmission.
@@ -27,7 +27,7 @@ uint8_t CAN26_Init(CAN_Handle_t CANHandle, CANDevice_t *device);
  *  @param RxPacket Pointer to CAN26 packet struct already filled with data.
  *  @return 0 if no error encountered, error codes otherwise.
  */
-uint8_t CAN26_Send(CAN_Handle_t CANHandle, const CANPacket_t *packet);
+uint8_t CANSend(CAN_Handle_t CANHandle, const CANPacket_t *packet);
 
 /**
  *  Check FIFO for received CAN Packets and parse first if present.
@@ -35,4 +35,4 @@ uint8_t CAN26_Send(CAN_Handle_t CANHandle, const CANPacket_t *packet);
  *  @param RxPacket Pointer to CAN26 packet struct to fill with received data
  *  @return 1 if message was present, 0 if no messages in FIFO, negative if error encountered.
  */
-int8_t CAN26_Receive(CAN_Handle_t CANHandle, CANPacket_t *packet);
+int8_t CANPollAndReceive(CAN_Handle_t CANHandle, CANPacket_t *packet);
