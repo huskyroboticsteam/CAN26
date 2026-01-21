@@ -1,12 +1,16 @@
+#pragma once
+
 /** This header file declares the generic functions that this CAN implementation provides for
  * basic setup and RX/TX. The only currently supported chipset is the STM32G4 family.
  * 
  */
 
- #define CHIPT_TYPE_STM32_G4XX         0x02
+#include "../CANPacket.h"
+
+#define CHIP_TYPE_STM32_G4XX         0x02
 
 // Generic pointer for CAN Handles, should cast to pointer of whatever handle given chipset uses for CAN
- typedef void* CAN_Handle_t;
+typedef void* CAN_Handle_t;
 
 
 /** 
@@ -24,8 +28,6 @@ uint8_t CAN26_Init(CAN_Handle_t CANHandle, CANDevice_t *device);
  *  @return 0 if no error encountered, error codes otherwise.
  */
 uint8_t CAN26_Send(CAN_Handle_t CANHandle, const CANPacket_t *packet);
-
-
 
 /**
  *  Check FIFO for received CAN Packets and parse first if present.

@@ -6,8 +6,8 @@
  *        Determine BAUD rate. Explore other parameters like auto re-transmission, error checking, etc.
  *        
  */
- 
-#if CHIP_TYPE == CHIPT_TYPE_STM32_G4XX
+
+#if defined(CHIP_TYPE) && CHIP_TYPE == CHIP_TYPE_STM32_G4XX
 
 #include "Port.h"
 #include "../CANPacket.h"
@@ -117,10 +117,10 @@ int8_t CAN26PollAndReceive(CAN_Handle_t CANHandle, CANPacket_t *RxPacket) {
         }
         RxPacket->contentsLength = dlc - 2;
         memcpy(&RxPacket->command, pRxData, 1);
-        memcpy(&RxPacket->senderUUID, pRxData+1, 1);
-        memcpy(&RxPacket->contents, pRxData+2, RxPacket->contentsLength);
+        memcpy(&RxPacket->senderUUID, pRxData + 1, 1);
+        memcpy(&RxPacket->contents, pRxData + 2, RxPacket->contentsLength);
         return 1;
     }
 }
 
-#endif // CHIP_TYPE == CHIPT_TYPE_STM32_G4XX
+#endif // defined(CHIP_TYPE) &&CHIP_TYPE == CHIPT_TYPE_STM32_G4XX
