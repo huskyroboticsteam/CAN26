@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CANHelpers.h"
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -19,20 +21,6 @@ typedef struct {
 
     uint16_t deviceUUID : 7;
 } CANDevice_t;
-
-/*
- * These macros are to find the way to define a small enum in the environment
- * Small enums save a net of 5 bytes per packet
- * These macros may not be necessary if we restrict our target more
- */
-#if __STDC_VERSION__ >= 202311L || __cplusplus >= 201103L
-    #define SMALL_ENUM typedef enum : uint8_t
-#elif defined(__GNUC__)
-    #define SMALL_ENUM typedef enum __attribute__((__packed__))
-#else
-    // Small enums don't exist in this case
-    #define SMALL_ENUM typedef enum
-#endif
 
 /**
  * Represents the priority of a CAN packet
