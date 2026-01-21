@@ -45,11 +45,8 @@ typedef uint8_t CANCommand_t;
  */
 typedef uint8_t CANDeviceUUID_t;
 
-// Example device uuids
+// UUID to broadcast to all can devices with the set domain bits
 #define CAN_UUID_BROADCAST ((CANDeviceUUID_t)0x00)
-#define CAN_UUID_JETSON    ((CANDeviceUUID_t)0x01)
-#define CAN_UUID_BLDC0     ((CANDeviceUUID_t)0x30)
-#define CAN_UUID_SENSOR0   ((CANDeviceUUID_t)0x50)
 
 /**
  * Used to turn a command id into its corresponding command with acknowledgement request
@@ -77,27 +74,31 @@ typedef struct {
 } CANPacket_t;
 
 // Note about struct initializers: C allows any order, C++ requires them to be in order
-// Example devices
-const static CANDevice_t fullBroadcast = {
-    .peripheralDomain = true,
-    .motorDomain = true,
-    .powerDomain = true,
-    .deviceUUID = CAN_UUID_BROADCAST
-};
 
-const static CANDevice_t jetson = {
-    .deviceUUID = CAN_UUID_JETSON
-};
-
-const static CANDevice_t exampleBldc = {
-    .motorDomain = true,
-    .deviceUUID = CAN_UUID_BLDC0
-};
-
-const static CANDevice_t exampleSensor = {
-    .peripheralDomain = true,
-    .deviceUUID = CAN_UUID_SENSOR0
-};
+/**
+ * Example Devices
+ *
+ * const static CANDevice_t fullBroadcast = {
+ *     .peripheralDomain = true,
+ *     .motorDomain = true,
+ *     .powerDomain = true,
+ *     .deviceUUID = CAN_UUID_BROADCAST
+ * };
+ * 
+ * const static CANDevice_t jetson = {
+ *     .deviceUUID = CAN_UUID_JETSON
+ * };
+ * 
+ * const static CANDevice_t exampleBldc = {
+ *     .motorDomain = true,
+ *     .deviceUUID = CAN_UUID_BLDC0
+ * };
+ * 
+ * const static CANDevice_t exampleSensor = {
+ *     .peripheralDomain = true,
+ *     .deviceUUID = CAN_UUID_SENSOR0
+ * };
+ */
 
 // Functions for retrieving packet components
 
