@@ -15,12 +15,12 @@
  * Constructs a packet to send an update from a limit switch to the given device
  * Limit switch alerts should be repeatedly sent at some interval of time
  */
-inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDeviceUUID_t sender, CANDevice_t device, uint8_t motorId, bool switchStatus) {
+inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t sender, CANDevice_t device, uint8_t motorId, bool switchStatus) {
     return (CANPacket_t){
         .device = device,
         .contentsLength = 2,
         .command = CAN_PACKET_ID__LIMIT_SWITCH_ALERT,
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {motorId, switchStatus}
     };
 }
@@ -33,12 +33,12 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDeviceUUID_t sender
  * Constructs a packet to tell a stepper motor to move a given number of revolutions from the current position
  * Positive number of revolutions should be clockwise, negative number should be counter-clockwise
  */
-inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDeviceUUID_t sender, CANDevice_t device, float numRevolutions) {
+inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t sender, CANDevice_t device, float numRevolutions) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 4,
         .command = CAN_PACKET_ID__STEPPER_DRIVE_RAD,
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
     };
     CANStoreFloat32(result.contents + 0, numRevolutions);
     return result;
@@ -67,12 +67,12 @@ inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDeviceUUID_
  * controlMode should be one of the BLDC_x_CONTROL macros
  * inputMode should be one of the BLDC_x_INPUT macros
  */
-inline static CANPacket_t CANMotorPacket_BLDC_SetInputMode(CANDeviceUUID_t sender, CANDevice_t device, uint8_t controlMode, uint8_t inputMode) {
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputMode(CANDevice_t sender, CANDevice_t device, uint8_t controlMode, uint8_t inputMode) {
     return (CANPacket_t){
         .device = device,
         .contentsLength = 2,
         .command = CAN_PACKET_ID__BLDC_INPUT_MODE,
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {controlMode, inputMode}
     };
 }
@@ -84,7 +84,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputMode(CANDeviceUUID_t sende
  * 
  * Feed forward velocity is actually in multiples of 0.001 rev/s, values are clipped into range
  */
-inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDeviceUUID_t sender, CANDevice_t device, float position, float feedForwardVelocity) {
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDevice_t sender, CANDevice_t device, float position, float feedForwardVelocity) {
     uint16_t feedForwardVelocityInt;
     // (the != acts as a NaN check here)
     if (feedForwardVelocity != feedForwardVelocity || feedForwardVelocity < 0) {
@@ -98,7 +98,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDeviceUUID_t s
         .device = device,
         .contentsLength = 6,
         .command = CAN_PACKET_ID__BLDC_INPUT_POSITION,
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreFloat32(result.contents + 0, position);
     CANStoreInt16  (result.contents + 4, feedForwardVelocityInt);
@@ -110,12 +110,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDeviceUUID_t s
  * The motor should be placed into the BLDC_VELOCITY_CONTROL mode before this packet is sent
  * velocity in units of rev/s, feedForwardTorque is in units of Nm
  */
-inline static CANPacket_t CANMotorPacket_BLDC_SetInputVelocity(CANDeviceUUID_t sender, CANDevice_t device, float velocity, float feedForwardTorque) {
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputVelocity(CANDevice_t sender, CANDevice_t device, float velocity, float feedForwardTorque) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
         .command = CAN_PACKET_ID__BLDC_INPUT_VELOCITY,
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreFloat32(result.contents + 0, velocity);
     CANStoreFloat16(result.contents + 4, feedForwardTorque);
@@ -125,12 +125,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputVelocity(CANDeviceUUID_t s
 /**
  * Constructs a packet to directly write to ODrive registers, setting the endpointID to the given value
  */
-inline static CANPacket_t CANMotorPacket_BLDC_DirectWrite(CANDeviceUUID_t sender, CANDevice_t device, uint16_t endpointID, uint32_t value) {
+inline static CANPacket_t CANMotorPacket_BLDC_DirectWrite(CANDevice_t sender, CANDevice_t device, uint16_t endpointID, uint32_t value) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
         .command = CAN_PACKET_ID__BLDC_DIRECT_WRITE,
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
     CANStoreUInt32(result.contents + 2, value);
@@ -142,12 +142,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectWrite(CANDeviceUUID_t sender
  *
  * Implies a reponse in the form of CANMotorPacket_BLDC_DirectReadResult
  */
-inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDeviceUUID_t sender, CANDevice_t device, uint16_t endpointID) {
+inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDevice_t sender, CANDevice_t device, uint16_t endpointID) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 2,
         .command = CAN_ACK(CAN_PACKET_ID__BLDC_DIRECT_READ),
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
     return result;
@@ -158,12 +158,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDeviceUUID_t sender,
  * Contains the value of the ODrive register that the read was requested from, as well as the endpoint it was requested from
  * The endpoint is sent to ensure ordering in case multiple requests were sent that got reordered for some reason
  */
-inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDeviceUUID_t sender, CANDevice_t device, uint16_t endpointID, uint32_t value) {
+inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDevice_t sender, CANDevice_t device, uint16_t endpointID, uint32_t value) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
         .command = CAN_PACKET_ID__BLDC_DIRECT_READ_RESULT,
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
     CANStoreUInt32(result.contents + 2, value);
@@ -176,12 +176,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDeviceUUID_t s
  *
  * Implies a response in the form of CANMotorPacket_BLDC_EncoderEstimates
  */
-inline static CANPacket_t CANMotorPacket_BLDC_GetEncoderEstimates(CANDeviceUUID_t sender, CANDevice_t device, uint8_t encoderID) {
+inline static CANPacket_t CANMotorPacket_BLDC_GetEncoderEstimates(CANDevice_t sender, CANDevice_t device, uint8_t encoderID) {
     return (CANPacket_t){
         .device = device,
         .contentsLength = 1,
         .command = CAN_ACK(CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE_GET),
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {encoderID}
     };
 }
@@ -193,12 +193,12 @@ inline static CANPacket_t CANMotorPacket_BLDC_GetEncoderEstimates(CANDeviceUUID_
  * position should be in units of rev
  * velocity should be in units of rev/s
  */
-inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDeviceUUID_t sender, CANDevice_t device, float position, float velocity) {
+inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDevice_t sender, CANDevice_t device, float position, float velocity) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
         .command = CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE,
-        .senderUUID = sender
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreBFloat24(result.contents + 0, position);
     CANStoreBFloat24(result.contents + 3, velocity);

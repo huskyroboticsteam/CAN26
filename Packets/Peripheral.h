@@ -11,12 +11,12 @@
  * Constructs a packet to set the duty cycle of the device with the given pwm ID
  * dutyCycle clamped to the range 0-100
  */
-inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDeviceUUID_t sender, CANDevice_t device, uint8_t peripheralID, float dutyCycle) {
+inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t sender, CANDevice_t device, uint8_t peripheralID, float dutyCycle) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 5,
         .command = CAN_PACKET_ID__PWM_DUTY_CYCLE,
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {peripheralID}
     };
     if (dutyCycle < 0) {
@@ -31,12 +31,12 @@ inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDeviceUUID_t se
 /**
  * Constructs a packet to set the color of the rover LED strips needed for competition
  */
-inline static CANPacket_t CANPeripheralPacket_SetRoverLEDColor(CANDeviceUUID_t sender, CANDevice_t device, uint8_t red, uint8_t green, uint8_t blue) {
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDColor(CANDevice_t sender, CANDevice_t device, uint8_t red, uint8_t green, uint8_t blue) {
     return (CANPacket_t){
         .device = device,
         .contentsLength = 3,
         .command = CAN_PACKET_ID__ROVER_LED_COLOR,
-        .senderUUID = sender,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {red, green, blue}
     };
 }
