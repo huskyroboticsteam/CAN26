@@ -10,7 +10,7 @@
 #define CHIP_TYPE_STM32_G4XX         0x02
 
 // Generic pointer for CAN Handles, should cast to pointer of whatever handle given chipset uses for CAN
-typedef void* CAN_Handle_t;
+typedef void *CANHandle_t;
 
 
 /** 
@@ -19,7 +19,7 @@ typedef void* CAN_Handle_t;
  * @param CANDevice This device's UUID and domain bits.
  * @return 0 for succesful setup, error codes otherwise.
  */
-uint8_t CANInit(CAN_Handle_t CANHandle, CANDevice_t *device);
+uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t *device);
 
 /**
  *  Send a CAN Packet for hardware transmission.
@@ -27,7 +27,7 @@ uint8_t CANInit(CAN_Handle_t CANHandle, CANDevice_t *device);
  *  @param RxPacket Pointer to CAN26 packet struct already filled with data.
  *  @return 0 if no error encountered, error codes otherwise.
  */
-uint8_t CANSend(CAN_Handle_t CANHandle, const CANPacket_t *packet);
+uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *packet);
 
 /**
  *  Check FIFO for received CAN Packets and parse first if present.
@@ -35,4 +35,4 @@ uint8_t CANSend(CAN_Handle_t CANHandle, const CANPacket_t *packet);
  *  @param RxPacket Pointer to CAN26 packet struct to fill with received data
  *  @return 1 if message was present, 0 if no messages in FIFO, negative if error encountered.
  */
-int8_t CANPollAndReceive(CAN_Handle_t CANHandle, CANPacket_t *packet);
+int8_t CANPollAndReceive(CANHandle_t CANHandle, CANPacket_t *packet);

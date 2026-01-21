@@ -31,7 +31,7 @@ static const FDCAN_TxHeaderTypeDef txHeaderCANStandard = {
 };
 
 
-uint8_t CAN26Init(CAN_Handle_t CANHandle, CANDevice_t *CANDevice) {
+uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t *CANDevice) {
     if (!CANHandle || !CANDevice) {
         return HAL_ERROR;
     }
@@ -77,7 +77,7 @@ uint8_t CAN26Init(CAN_Handle_t CANHandle, CANDevice_t *CANDevice) {
 }
 
 
-uint8_t CAN26Send(CAN_Handle_t CANHandle, const CANPacket_t *CANPacket) {
+uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *CANPacket) {
     if (!CANHandle || !CANPacket) {
         return HAL_ERROR;
     }
@@ -92,7 +92,7 @@ uint8_t CAN26Send(CAN_Handle_t CANHandle, const CANPacket_t *CANPacket) {
 
 
 
-int8_t CAN26PollAndReceive(CAN_Handle_t CANHandle, CANPacket_t *RxPacket) {
+int8_t CANPollAndReceive(CANHandle_t CANHandle, CANPacket_t *RxPacket) {
     if (!CANHandle || !RxPacket) {
         return HAL_ERROR;
     }
