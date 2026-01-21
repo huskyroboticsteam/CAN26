@@ -5,7 +5,7 @@
  */
 
 #include "../CANPacket.h"
-#include "../CANPacketIDs.h"
+#include "../CANCommandIDs.h"
 
 /**
  * Constructs a packet to set the duty cycle of the device with the given pwm ID

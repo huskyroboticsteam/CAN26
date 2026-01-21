@@ -6,7 +6,7 @@
  */
 
 #include "../CANPacket.h"
-#include "../CANPacketIDs.h"
+#include "../CANCommandIDs.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #include "../CANPacket.h"
-#include "../CANPacketIDs.h"
+#include "../CANCommandIDs.h"
 
 // General
 
