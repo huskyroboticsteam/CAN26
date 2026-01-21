@@ -63,12 +63,6 @@ typedef uint8_t CANDeviceUUID_t;
 #define CAN_UUID_BLDC0     ((CANDeviceUUID_t)0x30)
 #define CAN_UUID_SENSOR0   ((CANDeviceUUID_t)0x50)
 
-// Example command ids
-#define CAN_COMMAND_ERROR        ((CANCommand_t)0x7F)
-#define CAN_COMMAND_ESTOP        ((CANCommand_t)0x00)
-#define CAN_COMMAND_PING         ((CANCommand_t)0x01)
-#define CAN_COMMAND_READ_VOLTAGE ((CANCommand_t)0x02)
-
 /**
  * Used to turn a command id into its corresponding command with acknowledgement request
  * Bitwise ORing a command with 0x80 (ack) will request a response
@@ -115,22 +109,6 @@ const static CANDevice_t exampleBldc = {
 const static CANDevice_t exampleSensor = {
     .peripheralDomain = true,
     .deviceUUID = CAN_UUID_SENSOR0
-};
-
-// Example packets
-const static CANPacket_t eStopPacket = {
-    .device = fullBroadcast,
-    .priority = CAN_PRIORITY_HIGH,
-    .command = CAN_COMMAND_ESTOP,
-    .senderUUID = CAN_UUID_JETSON
-};
-
-const static CANPacket_t voltageReadPacket = {
-    .device = exampleSensor,
-    .contentsLength = 1,
-    .command = CAN_ACK(CAN_COMMAND_READ_VOLTAGE),
-    .senderUUID = CAN_UUID_JETSON,
-    .contents = {4} // maybe we are reading from the 5th cell or something
 };
 
 // Functions for retrieving packet components
