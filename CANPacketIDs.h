@@ -1,19 +1,19 @@
 #pragma once
 
-#define CAN_PACKET_ID__E_STOP                    0x00
-#define CAN_PACKET_ID__ACKNOWLEDGE               0x01
-#define CAN_PACKET_ID__HEARTBEAT                 0x02
-#define CAN_PACKET_ID__VERSION_GET               0x03
-#define CAN_PACKET_ID__VERSION                   0x04
-#define CAN_PACKET_ID__LIMIT_SWITCH_ALERT        0x05 
-#define CAN_PACKET_ID__STEPPER_DRIVE_RAD         0x06
-#define CAN_PACKET_ID__BLDC_INPUT_MODE           0x07
-#define CAN_PACKET_ID__BLDC_INPUT_POSITION       0x08
-#define CAN_PACKET_ID__BLDC_INPUT_VELOCITY       0x09
-#define CAN_PACKET_ID__BLDC_DIRECT_WRITE         0x0a
-#define CAN_PACKET_ID__BLDC_DIRECT_READ          0x0b
-#define CAN_PACKET_ID__BLDC_DIRECT_READ_RESULT   0x0c
-#define CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE_GET 0x0d
-#define CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE     0x0e
-#define CAN_PACKET_ID__PWM_DUTY_CYCLE            0x0f
-#define CAN_PACKET_ID__ROVER_LED_COLOR           0x10
+#define CAN_PACKET_ID__E_STOP                    ((CANCommand_t)0x00)
+#define CAN_PACKET_ID__ACKNOWLEDGE               ((CANCommand_t)0x01)
+#define CAN_PACKET_ID__HEARTBEAT                 ((CANCommand_t)0x02)
+#define CAN_PACKET_ID__VERSION_GET               ((CANCommand_t)0x03)
+#define CAN_PACKET_ID__VERSION                   ((CANCommand_t)0x04)
+#define CAN_PACKET_ID__LIMIT_SWITCH_ALERT        ((CANCommand_t)0x05)
+#define CAN_PACKET_ID__STEPPER_DRIVE_RAD         ((CANCommand_t)0x06)
+#define CAN_PACKET_ID__BLDC_INPUT_MODE           ((CANCommand_t)0x07)
+#define CAN_PACKET_ID__BLDC_INPUT_POSITION       ((CANCommand_t)0x08)
+#define CAN_PACKET_ID__BLDC_INPUT_VELOCITY       ((CANCommand_t)0x09)
+#define CAN_PACKET_ID__BLDC_DIRECT_WRITE         ((CANCommand_t)0x0a)
+#define CAN_PACKET_ID__BLDC_DIRECT_READ          ((CANCommand_t)0x0b)
+#define CAN_PACKET_ID__BLDC_DIRECT_READ_RESULT   ((CANCommand_t)0x0c)
+#define CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE_GET ((CANCommand_t)0x0d)
+#define CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE     ((CANCommand_t)0x0e)
+#define CAN_PACKET_ID__PWM_DUTY_CYCLE            ((CANCommand_t)0x0f)
+#define CAN_PACKET_ID__ROVER_LED_COLOR           ((CANCommand_t)0x10)
