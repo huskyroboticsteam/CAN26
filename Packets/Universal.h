@@ -54,6 +54,8 @@ inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDevice_t send
     };
 }
 
+#define CAN_FIRMWARE_VERSION_LEN 4
+
 /**
  * Returns a packet that encodes the firmware version
  * Should be sent as a response to a GetFirmwareVersion packet
@@ -62,7 +64,7 @@ inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDevice_t send
  */
 inline static CANPacket_t CANUniversalPacket_FirmwareVersion(CANDevice_t sender, CANDevice_t device, const char *name, uint16_t versionID) {
     size_t nameLength = strlen(name);
-    if (nameLength > 4) nameLength = 4;
+    if (nameLength > CAN_FIRMWARE_VERSION_LEN) nameLength = CAN_FIRMWARE_VERSION_LEN;
     CANPacket_t result = {
         .device = device,
         .contentsLength = (uint8_t)(2 + nameLength),
