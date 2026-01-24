@@ -21,5 +21,8 @@
 #define CAN_UUID_TELEMETRY      ((CANDeviceUUID_t)0x50)
 #define CAN_UUID_HAND           ((CANDeviceUUID_t)0x60)
 
+#define CAN_UUID_DEBUG1      ((CANDeviceUUID_t)0x70)
+#define CAN_UUID_DEBUG2      ((CANDeviceUUID_t)0x71)
+
 
 #define CAN_DEVICE_JETSON ((CANDevice_t){.deviceUUID = CAN_UUID_JETSON})
