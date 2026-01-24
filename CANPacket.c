@@ -15,7 +15,7 @@ uint16_t CANGetPacketHeader(CANPacket_t *packet) {
         // This branch of the if is taken in most applicable environments
         memcpy(&device, &packet->device, sizeof(uint16_t));
         
-        // Padding contents are implementation defined, this line ensures they are excluded
+        // Padding contents are undefined, this line ensures they are excluded
         device &= 0x3FF;
     } else {
         // backup code for big endian processors or if the bit field is not condensed
