@@ -18,7 +18,7 @@ typedef struct {
 inline static CANPeripheralPacket_SetPWMDutyCycle_Decoded_t
 CANPeripheralPacket_SetPWMDutyCycle_Decode(const CANPacket_t *packet) {
     float dutyCycle = CANLoadFloat32(packet->contents + 1);
-    return {
+    return (CANPeripheralPacket_SetPWMDutyCycle_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .peripheralID = packet->contents[0],
         .dutyCycle = dutyCycle
@@ -37,7 +37,7 @@ typedef struct {
  */
 inline static CANPeripheralPacket_SetRoverLEDColor_Decoded_t
 CANPeripheralPacket_SetRoverLEDColor_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANPeripheralPacket_SetRoverLEDColor_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .red = packet->contents[0],
         .green = packet->contents[1],

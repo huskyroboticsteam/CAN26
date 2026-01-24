@@ -8,11 +8,11 @@
  */
 
 #if defined(CHIP_TYPE) && CHIP_TYPE == CHIP_TYPE_STM32_G4XX
-
 #include "Port.h"
 #include "../CANPacket.h"
-#include "../stm32g4xx_hal.h"
+#include "stm32g4xx_hal.h"
 #include <stdint.h>
+#include <string.h>
 
 // Bit positions of specific address portions for filter detection
 #define PRIORITY_POS       10
@@ -103,7 +103,7 @@ int8_t CANPollAndReceive(CANHandle_t CANHandle, CANPacket_t *RxPacket) {
     } else { // messages present in FIFO
         FDCAN_RxHeaderTypeDef RxHeader;
         uint8_t pRxData[8];
-        uint8_t status = HAL_FDACAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, RxHeader, pRxData);
+        HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, pRxData);
         RxPacket->priority = (RxHeader.Identifier & (1 << 10)) ? CAN_PRIORITY_LOW : CAN_PRIORITY_HIGH;
 
         uint16_t deviceBits = RxHeader.Identifier & 0x3FF; 
