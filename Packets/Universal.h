@@ -19,7 +19,7 @@ inline static CANPacket_t CANUniversalPacket_EStop(CANDevice_t sender, CANDevice
         .device = device,
         .priority = CAN_PRIORITY_HIGH,
         .contentsLength = 0,
-        .command = CAN_PACKET_ID__E_STOP,
+        .command = CAN_COMMAND_ID__E_STOP,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
 }
@@ -32,7 +32,7 @@ inline static CANPacket_t CANUniversalPacket_Acknowledge(CANDevice_t sender, CAN
     return (CANPacket_t){
         .device = device,
         .contentsLength = 1,
-        .command = CAN_PACKET_ID__ACKNOWLEDGE,
+        .command = CAN_COMMAND_ID__ACKNOWLEDGE,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {failure}
     };
@@ -49,7 +49,7 @@ inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDevice_t send
     return (CANPacket_t){
         .device = device,
         .contentsLength = 0,
-        .command = CAN_ACK(CAN_PACKET_ID__VERSION_GET),
+        .command = CAN_ACK(CAN_COMMAND_ID__VERSION_GET),
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
 }
@@ -68,7 +68,7 @@ inline static CANPacket_t CANUniversalPacket_FirmwareVersion(CANDevice_t sender,
     CANPacket_t result = {
         .device = device,
         .contentsLength = (uint8_t)(2 + nameLength),
-        .command = CAN_PACKET_ID__VERSION,
+        .command = CAN_COMMAND_ID__VERSION,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, versionID);

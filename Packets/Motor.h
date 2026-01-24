@@ -19,7 +19,7 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t sender, CA
     return (CANPacket_t){
         .device = device,
         .contentsLength = 2,
-        .command = CAN_PACKET_ID__LIMIT_SWITCH_ALERT,
+        .command = CAN_COMMAND_ID__LIMIT_SWITCH_ALERT,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {motorId, switchStatus}
     };
@@ -37,7 +37,7 @@ inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t se
     CANPacket_t result = {
         .device = device,
         .contentsLength = 4,
-        .command = CAN_PACKET_ID__STEPPER_DRIVE_RAD,
+        .command = CAN_COMMAND_ID__STEPPER_DRIVE_RAD,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
     };
     CANStoreFloat32(result.contents + 0, numRevolutions);
@@ -71,7 +71,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputMode(CANDevice_t sender, C
     return (CANPacket_t){
         .device = device,
         .contentsLength = 2,
-        .command = CAN_PACKET_ID__BLDC_INPUT_MODE,
+        .command = CAN_COMMAND_ID__BLDC_INPUT_MODE,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {controlMode, inputMode}
     };
@@ -97,7 +97,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDevice_t sende
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
-        .command = CAN_PACKET_ID__BLDC_INPUT_POSITION,
+        .command = CAN_COMMAND_ID__BLDC_INPUT_POSITION,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreFloat32(result.contents + 0, position);
@@ -114,7 +114,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_SetInputVelocity(CANDevice_t sende
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
-        .command = CAN_PACKET_ID__BLDC_INPUT_VELOCITY,
+        .command = CAN_COMMAND_ID__BLDC_INPUT_VELOCITY,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreFloat32(result.contents + 0, velocity);
@@ -129,7 +129,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectWrite(CANDevice_t sender, CA
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
-        .command = CAN_PACKET_ID__BLDC_DIRECT_WRITE,
+        .command = CAN_COMMAND_ID__BLDC_DIRECT_WRITE,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
@@ -146,7 +146,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDevice_t sender, CAN
     CANPacket_t result = {
         .device = device,
         .contentsLength = 2,
-        .command = CAN_ACK(CAN_PACKET_ID__BLDC_DIRECT_READ),
+        .command = CAN_ACK(CAN_COMMAND_ID__BLDC_DIRECT_READ),
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
@@ -162,7 +162,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDevice_t sende
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
-        .command = CAN_PACKET_ID__BLDC_DIRECT_READ_RESULT,
+        .command = CAN_COMMAND_ID__BLDC_DIRECT_READ_RESULT,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreUInt16(result.contents + 0, endpointID);
@@ -180,7 +180,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_GetEncoderEstimates(CANDevice_t se
     return (CANPacket_t){
         .device = device,
         .contentsLength = 1,
-        .command = CAN_ACK(CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE_GET),
+        .command = CAN_ACK(CAN_COMMAND_ID__BLDC_ENCODER_ESTIMATE_GET),
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {encoderID}
     };
@@ -197,7 +197,7 @@ inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDevice_t sende
     CANPacket_t result = {
         .device = device,
         .contentsLength = 6,
-        .command = CAN_PACKET_ID__BLDC_ENCODER_ESTIMATE,
+        .command = CAN_COMMAND_ID__BLDC_ENCODER_ESTIMATE,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
     CANStoreBFloat24(result.contents + 0, position);

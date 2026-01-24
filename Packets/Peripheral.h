@@ -15,7 +15,7 @@ inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t sender
     CANPacket_t result = {
         .device = device,
         .contentsLength = 5,
-        .command = CAN_PACKET_ID__PWM_DUTY_CYCLE,
+        .command = CAN_COMMAND_ID__PWM_DUTY_CYCLE,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {peripheralID}
     };
@@ -35,7 +35,7 @@ inline static CANPacket_t CANPeripheralPacket_SetRoverLEDColor(CANDevice_t sende
     return (CANPacket_t){
         .device = device,
         .contentsLength = 3,
-        .command = CAN_PACKET_ID__ROVER_LED_COLOR,
+        .command = CAN_COMMAND_ID__ROVER_LED_COLOR,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
         .contents = {red, green, blue}
     };
