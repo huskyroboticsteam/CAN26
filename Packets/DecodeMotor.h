@@ -19,7 +19,7 @@ typedef struct {
  */
 inline static CANMotorPacket_LimitSwitchAlert_Decoded_t
 CANMotorPacket_LimitSwitchAlert_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANMotorPacket_LimitSwitchAlert_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .motorID = packet->contents[0],
         .switchStatus = (bool)packet->contents[1]
@@ -39,7 +39,7 @@ typedef struct {
 inline static CANMotorPacket_Stepper_DriveRevolutions_Decoded_t
 CANMotorPacket_Stepper_DriveRevolutions_Decode(const CANPacket_t *packet) {
     float numRevolutions = CANLoadFloat32(packet->contents + 0);
-    return {
+    return (CANMotorPacket_Stepper_DriveRevolutions_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .numRevolutions = numRevolutions
     };
@@ -58,7 +58,7 @@ typedef struct {
  */
 inline static CANMotorPacket_BLDC_SetInputMode_Decoded_t
 CANMotorPacket_BLDC_SetInputMode_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANMotorPacket_BLDC_SetInputMode_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .controlMode = packet->contents[0],
         .inputMode = packet->contents[1]
@@ -78,7 +78,7 @@ inline static CANMotorPacket_BLDC_SetInputPosition_Decoded_t
 CANMotorPacket_BLDC_SetInputPosition_Decode(const CANPacket_t *packet) {
     float position = CANLoadFloat32(packet->contents + 0);
     float feedForwardVelocity = CANLoadInt16(packet->contents + 4) * 0.001;
-    return {
+    return (CANMotorPacket_BLDC_SetInputPosition_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .position = position,
         .feedForwardVelocity = feedForwardVelocity
@@ -98,7 +98,7 @@ inline static CANMotorPacket_BLDC_SetInputVelocity_Decoded_t
 CANMotorPacket_BLDC_SetInputVelocity_Decode(const CANPacket_t *packet) {
     float velocity = CANLoadFloat32(packet->contents + 0);
     float feedForwardTorque = CANLoadFloat16(packet->contents + 4);
-    return {
+    return (CANMotorPacket_BLDC_SetInputVelocity_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .velocity = velocity,
         .feedForwardTorque = feedForwardTorque
@@ -118,7 +118,7 @@ inline static CANMotorPacket_BLDC_DirectWrite_Decoded_t
 CANMotorPacket_BLDC_DirectWrite_Decode(const CANPacket_t *packet) {
     uint16_t endpointID = CANLoadUInt16(packet->contents + 0);
     uint32_t value      = CANLoadUInt32(packet->contents + 2);
-    return {
+    return (CANMotorPacket_BLDC_DirectWrite_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .endpointID = endpointID,
         .value = value
@@ -137,7 +137,7 @@ typedef struct {
 inline static CANMotorPacket_BLDC_DirectRead_Decoded_t
 CANMotorPacket_BLDC_DirectRead_Decode(const CANPacket_t *packet) {
     uint16_t endpointID = CANLoadUInt16(packet->contents + 0);
-    return {
+    return (CANMotorPacket_BLDC_DirectRead_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .endpointID = endpointID
     };
@@ -157,7 +157,7 @@ inline static CANMotorPacket_BLDC_DirectReadResult_Decoded_t
 CANMotorPacket_BLDC_DirectReadResult_Decode(const CANPacket_t *packet) {
     uint16_t endpointID = CANLoadUInt16(packet->contents + 0);
     uint32_t value      = CANLoadUInt32(packet->contents + 2);
-    return {
+    return (CANMotorPacket_BLDC_DirectReadResult_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .endpointID = endpointID,
         .value = value
@@ -175,7 +175,7 @@ typedef struct {
  */
 inline static CANMotorPacket_BLDC_GetEncoderEstimates_Decoded_t
 CANMotorPacket_BLDC_GetEncoderEstimates_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANMotorPacket_BLDC_GetEncoderEstimates_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .encoderID = packet->contents[0]
     };
@@ -195,7 +195,7 @@ inline static CANMotorPacket_BLDC_EncoderEstimates_Decoded_t
 CANMotorPacket_BLDC_EncoderEstimates_Decode(const CANPacket_t *packet) {
     float position = CANLoadBFloat24(packet->contents + 0);
     float velocity = CANLoadBFloat24(packet->contents + 3);
-    return {
+    return (CANMotorPacket_BLDC_EncoderEstimates_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .position = position,
         .velocity = velocity

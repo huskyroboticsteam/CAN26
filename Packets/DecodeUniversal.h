@@ -18,7 +18,7 @@ typedef struct {
  */
 inline static CANUniversalPacket_EStop_Decoded_t
 CANUniversalPacket_EStop_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANUniversalPacket_EStop_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID}
     };
 }
@@ -33,7 +33,7 @@ typedef struct {
  */
 inline static CANUniversalPacket_Acknowledge_Decoded_t
 CANUniversalPacket_Acknowledge_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANUniversalPacket_Acknowledge_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .failure = (bool)packet->contents[0]
     };
@@ -48,7 +48,7 @@ typedef struct {
  */
 inline static CANUniversalPacket_GetFirmwareVersion_Decoded_t
 CANUniversalPacket_GetFirmwareVersion_Decode(const CANPacket_t *packet) {
-    return {
+    return (CANUniversalPacket_GetFirmwareVersion_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID}
     };
 }
