@@ -25,6 +25,24 @@ CANUniversalPacket_EStop_Decode(const CANPacket_t *packet) {
 
 typedef struct {
     CANDevice_t sender;
+    uint8_t error;
+    uint8_t state;
+} CANUniversalPacket_HeartBeat_Decoded_t;
+
+/**
+ * Decodes a heartbeat packet into its sender, error status, and state
+ */
+inline static CANUniversalPacket_HeartBeat_Decoded_t
+CANUniversalPacket_HeartBeat_Decode(const CANPacket_t *packet) {
+    return (CANUniversalPacket_HeartBeat_Decoded_t){
+        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .error = packet->contents[0],
+        .state = packet->contents[1]
+    };
+}
+
+typedef struct {
+    CANDevice_t sender;
     bool failure;
 } CANUniversalPacket_Acknowledge_Decoded_t;
 

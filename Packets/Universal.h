@@ -25,6 +25,22 @@ inline static CANPacket_t CANUniversalPacket_EStop(CANDevice_t sender, CANDevice
 }
 
 /**
+ * Returns a heartbeat packet that indicates to the device that the sender is active
+ * Contains device specific state information
+ * error contains information on the current error state of the device (e.g. bad config, over temp, etc.)
+ * state contains information on the current state of the device (e.g. idle, startup, etc.)
+ */
+inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t sender, CANDevice_t device, uint8_t error, uint8_t state) {
+    return (CANPacket_t){
+        .device = device,
+        .contentsLength = 2,
+        .command = CAN_COMMAND_ID__HEARTBEAT,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
+        .contents = {error, state}
+    };
+}
+
+/**
  * Returns a packet that represents a general acknowledgement
  * Should be sent when an acknowledgment was requested but no specific acknowledge packet exists
  */
