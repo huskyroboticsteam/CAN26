@@ -36,11 +36,10 @@ inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t sender, CANDe
         .contentsLength = 5,
         .command = CAN_COMMAND_ID__HEARTBEAT,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
-    }
+    };
 	CANStoreUInt32(result.contents + 0, error);
     result.contents[4] = state;
     return result;
-    };
 }
 
 /**
