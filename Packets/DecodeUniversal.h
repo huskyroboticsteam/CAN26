@@ -11,6 +11,7 @@
 
 typedef struct {
     CANDevice_t sender;
+    CANDevice_t receiver;
 } CANUniversalPacket_EStop_Decoded_t;
 
 /**
@@ -19,7 +20,8 @@ typedef struct {
 inline static CANUniversalPacket_EStop_Decoded_t
 CANUniversalPacket_EStop_Decode(const CANPacket_t *packet) {
     return (CANUniversalPacket_EStop_Decoded_t){
-        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID}
+        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device
     };
 }
 

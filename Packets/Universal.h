@@ -30,13 +30,16 @@ inline static CANPacket_t CANUniversalPacket_EStop(CANDevice_t sender, CANDevice
  * error contains information on the current error state of the device (e.g. bad config, over temp, etc.)
  * state contains information on the current state of the device (e.g. idle, startup, etc.)
  */
-inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t sender, CANDevice_t device, uint8_t error, uint8_t state) {
-    return (CANPacket_t){
+inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t sender, CANDevice_t device, uint32_t error, uint8_t state) {
+    CANPacket_t result = {
         .device = device,
-        .contentsLength = 2,
+        .contentsLength = 5,
         .command = CAN_COMMAND_ID__HEARTBEAT,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .contents = {error, state}
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
+    }
+	CANStoreUInt32(result.contents + 0, error);
+    result.contents[4] = state;
+    return result;
     };
 }
 
