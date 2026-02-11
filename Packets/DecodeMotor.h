@@ -76,6 +76,7 @@ typedef struct {
     CANDevice_t receiver;
     float position;
     float feedForwardVelocity;
+    int16_t feedForwardVelocityRaw;
 } CANMotorPacket_BLDC_SetInputPosition_Decoded_t;
 
 /**
@@ -84,12 +85,14 @@ typedef struct {
 inline static CANMotorPacket_BLDC_SetInputPosition_Decoded_t
 CANMotorPacket_BLDC_SetInputPosition_Decode(const CANPacket_t *packet) {
     float position = CANLoadFloat32(packet->contents + 0);
-    float feedForwardVelocity = CANLoadInt16(packet->contents + 4) * 0.001;
+    int16_t feedForwardVelocityRaw = CANLoadInt16(packet->contents + 4);
+    float feedForwardVelocity = feedForwardVelocityRaw * 0.001;
     return (CANMotorPacket_BLDC_SetInputPosition_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .receiver = packet->device,
         .position = position,
-        .feedForwardVelocity = feedForwardVelocity
+        .feedForwardVelocity = feedForwardVelocity,
+        .feedForwardVelocityRaw = feedForwardVelocityRaw
     };
 }
 
