@@ -9,7 +9,7 @@
  *
  * The packet pointer is assumed to be a valid packet
  */
-uint16_t CANGetPacketHeader(CANPacket_t *packet) {
+uint16_t CANGetPacketHeader(const CANPacket_t *packet) {
     uint16_t device;
     if (sizeof(CANDevice_t) == sizeof(uint16_t) && little_endian_bitfields()) {
         // This branch of the if is taken in most applicable environments
@@ -32,7 +32,7 @@ uint16_t CANGetPacketHeader(CANPacket_t *packet) {
  * Returns the data length code that should be used for the can packet
  * Note that the contents length of the packet is 2 less than the actual data length code
  */
-uint8_t CANGetDlc(CANPacket_t *packet) {
+uint8_t CANGetDlc(const CANPacket_t *packet) {
     return packet->contentsLength + 2;
 }
 

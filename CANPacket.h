@@ -103,12 +103,12 @@ typedef struct {
  * Returns the 11 bit structure representing the CAN packet header
  * Includes priority and device
  */
-uint16_t CANGetPacketHeader(CANPacket_t *packet);
+uint16_t CANGetPacketHeader(const CANPacket_t *packet);
 
 /**
  * Returns the true data length of the CAN packet (including command id and sender id)
  */
-uint8_t CANGetDlc(CANPacket_t *packet);
+uint8_t CANGetDlc(const CANPacket_t *packet);
 
 /**
  * Returns a pointer to the 8 byte data section of the CAN packet (including command id and sender id)
