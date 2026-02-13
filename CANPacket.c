@@ -44,6 +44,13 @@ uint8_t *CANGetData(CANPacket_t *packet) {
 }
 
 /**
+ * Returns a const pointer to the start of the (up to) 8 byte data used in the can packet
+ */
+const uint8_t *CANGetDataConst(const CANPacket_t *packet) {
+    return (const uint8_t *)&packet->command;
+}
+
+/**
  * Returns the 32 bit unsigned value stored at the given memory location
  * Enforces LE and the location is allowed to be misaligned
  */

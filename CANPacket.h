@@ -115,6 +115,12 @@ uint8_t CANGetDlc(const CANPacket_t *packet);
  */
 uint8_t *CANGetData(CANPacket_t *packet);
 
+/**
+ * Returns a const pointer to the 8 byte data section of the CAN packet
+ * Identical to CANGetData, but prevents warnings
+ */
+const uint8_t *CANGetDataConst(const CANPacket_t *packet);
+
 // Functions for reading packet data
 /* Overview of available formats
  * name     - size - type
