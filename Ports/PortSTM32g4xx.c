@@ -87,7 +87,7 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *CANPacket) {
     messageHeader.Identifier = CANGetPacketHeader(CANPacket);
     messageHeader.DataLength = CANGetDlc(CANPacket);
 
-    return (uint8_t)HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &messageHeader, CANGetData(CANPacket));
+    return (uint8_t)HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &messageHeader, CANGetDataConst(CANPacket));
 }
 
 
