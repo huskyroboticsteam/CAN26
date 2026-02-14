@@ -27,6 +27,7 @@ CANUniversalPacket_EStop_Decode(const CANPacket_t *packet) {
 
 typedef struct {
     CANDevice_t sender;
+    CANDevice_t receiver;
     uint8_t error;
     uint8_t state;
 } CANUniversalPacket_HeartBeat_Decoded_t;
@@ -38,6 +39,7 @@ inline static CANUniversalPacket_HeartBeat_Decoded_t
 CANUniversalPacket_HeartBeat_Decode(const CANPacket_t *packet) {
     return (CANUniversalPacket_HeartBeat_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device,
         .error = packet->contents[0],
         .state = packet->contents[1]
     };
@@ -45,6 +47,7 @@ CANUniversalPacket_HeartBeat_Decode(const CANPacket_t *packet) {
 
 typedef struct {
     CANDevice_t sender;
+    CANDevice_t receiver;
     bool failure;
 } CANUniversalPacket_Acknowledge_Decoded_t;
 
@@ -55,12 +58,14 @@ inline static CANUniversalPacket_Acknowledge_Decoded_t
 CANUniversalPacket_Acknowledge_Decode(const CANPacket_t *packet) {
     return (CANUniversalPacket_Acknowledge_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device,
         .failure = (bool)packet->contents[0]
     };
 }
 
 typedef struct {
     CANDevice_t sender;
+    CANDevice_t receiver;
 } CANUniversalPacket_GetFirmwareVersion_Decoded_t;
 
 /**
@@ -69,12 +74,14 @@ typedef struct {
 inline static CANUniversalPacket_GetFirmwareVersion_Decoded_t
 CANUniversalPacket_GetFirmwareVersion_Decode(const CANPacket_t *packet) {
     return (CANUniversalPacket_GetFirmwareVersion_Decoded_t){
-        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID}
+        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device
     };
 }
 
 typedef struct {
     CANDevice_t sender;
+    CANDevice_t receiver;
     uint16_t versionID;
     char name[CAN_FIRMWARE_VERSION_LEN];
 } CANUniversalPacket_FirmwareVersion_Decoded_t;
@@ -87,6 +94,7 @@ CANUniversalPacket_FirmwareVersion_Decode(const CANPacket_t *packet) {
     uint16_t versionID = CANLoadUInt16(packet->contents + 0);
     CANUniversalPacket_FirmwareVersion_Decoded_t result = {
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device,
         .versionID = versionID
     };
     for (int i = 0; i < CAN_FIRMWARE_VERSION_LEN; ++i) {
