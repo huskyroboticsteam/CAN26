@@ -6,7 +6,7 @@
 #define CAN_COMMAND_ID__VERSION_GET               ((CANCommand_t)0x03)
 #define CAN_COMMAND_ID__VERSION                   ((CANCommand_t)0x04)
 #define CAN_COMMAND_ID__LIMIT_SWITCH_ALERT        ((CANCommand_t)0x05)
-#define CAN_COMMAND_ID__STEPPER_DRIVE_RAD         ((CANCommand_t)0x06)
+#define CAN_COMMAND_ID__STEPPER_DRIVE_REVS        ((CANCommand_t)0x06)
 #define CAN_COMMAND_ID__BLDC_INPUT_MODE           ((CANCommand_t)0x07)
 #define CAN_COMMAND_ID__BLDC_INPUT_POSITION       ((CANCommand_t)0x08)
 #define CAN_COMMAND_ID__BLDC_INPUT_VELOCITY       ((CANCommand_t)0x09)
