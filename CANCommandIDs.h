@@ -15,5 +15,6 @@
 #define CAN_COMMAND_ID__BLDC_DIRECT_READ_RESULT   ((CANCommand_t)0x0c)
 #define CAN_COMMAND_ID__BLDC_ENCODER_ESTIMATE_GET ((CANCommand_t)0x0d)
 #define CAN_COMMAND_ID__BLDC_ENCODER_ESTIMATE     ((CANCommand_t)0x0e)
+#define CAN_COMMAND_ID__BLDC_AXIS_STATE           ((CANCommand_t)0x11)
 #define CAN_COMMAND_ID__PWM_DUTY_CYCLE            ((CANCommand_t)0x0f)
 #define CAN_COMMAND_ID__ROVER_LED_COLOR           ((CANCommand_t)0x10)

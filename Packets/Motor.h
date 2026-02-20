@@ -204,3 +204,18 @@ inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDevice_t sende
     CANStoreBFloat24(result.contents + 3, velocity);
     return result;
 }
+
+/**
+ * Constructs a packet to set the axis state of an ODrive bldc
+ * axisState should be one of the CAN_AXIS_ macros
+ */
+inline static CANPacket_t CANMotorPacket_BLDC_SetAxisState(CANDevice_t sender, CANDevice_t device, uint32_t axisState) {
+    CANPacket_t result = {
+        .device = device,
+        .contentsLength = 4,
+        .command = CAN_COMMAND_ID__BLDC_AXIS_STATE,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
+    };
+    CANStoreUInt32(result.contents, axisState);
+    return result;
+}

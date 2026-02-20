@@ -224,3 +224,22 @@ CANMotorPacket_BLDC_EncoderEstimates_Decode(const CANPacket_t *packet) {
         .velocity = velocity
     };
 }
+
+typedef struct {
+    CANDevice_t sender;
+    CANDevice_t receiver;
+    uint32_t axisState;
+} CANMotorPacket_BLDC_SetAxisState_Decoded_t;
+
+/**
+ * Decodes a set axis state packet into the sender, receiver, and axis state
+ */
+inline static CANMotorPacket_BLDC_SetAxisState_Decoded_t
+CANMotorPacket_BLDC_SetAxisState_Decode(const CANPacket_t *packet) {
+    uint32_t axisState = CANLoadUInt32(packet->contents);
+    return (CANMotorPacket_BLDC_SetAxisState_Decoded_t){
+        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .receiver = packet->device,
+        .axisState = axisState
+    };
+}
