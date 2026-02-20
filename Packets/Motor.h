@@ -205,9 +205,25 @@ inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDevice_t sende
     return result;
 }
 
+#define BLDC_AXIS_UNDEFINED                         0
+#define BLDC_AXIS_IDLE                              1
+#define BLDC_AXIS_STARTUP_SEQUENCE                  2
+#define BLDC_AXIS_FULL_CALIBRATION_SEQUENCE         3
+#define BLDC_AXIS_MOTOR_CALIBRATION                 4
+#define BLDC_AXIS_ENCODER_INDEX_SEARCH              5
+#define BLDC_AXIS_ENCODER_OFFSET_CALIBRATION        6
+#define BLDC_AXIS_CLOSED_LOOP_CONTROL               8
+#define BLDC_AXIS_LOCKIN_SPIN                       9
+#define BLDC_AXIS_ENCODER_DIR_FIND                  10
+#define BLDC_AXIS_HOMING                            11
+#define BLDC_AXIS_ENCODER_HALL_POLARITY_CALIBRATION 12
+#define BLDC_AXIS_ENCODER_HALL_PHASE_CALIBRATION    13
+#define BLDC_AXIS_ANTICOGGING_CALIBRATION           14
+#define BLDC_AXIS_HARMONIC_CALIBRATION              15
+
 /**
  * Constructs a packet to set the axis state of an ODrive bldc
- * axisState should be one of the CAN_AXIS_ macros
+ * axisState should be one of the BLDC_AXIS_ macros
  */
 inline static CANPacket_t CANMotorPacket_BLDC_SetAxisState(CANDevice_t sender, CANDevice_t device, uint32_t axisState) {
     CANPacket_t result = {
