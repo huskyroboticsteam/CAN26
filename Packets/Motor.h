@@ -37,7 +37,7 @@ inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t se
     CANPacket_t result = {
         .device = device,
         .contentsLength = 4,
-        .command = CAN_COMMAND_ID__STEPPER_DRIVE_RAD,
+        .command = CAN_COMMAND_ID__STEPPER_DRIVE_REVS,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
     };
     CANStoreFloat32(result.contents + 0, numRevolutions);
