@@ -53,7 +53,8 @@ typedef struct {
 } CANUniversalPacket_Acknowledge_Decoded_t;
 
 /**
- * Decodes a general acknowledge packet into its sender and whether the request failed
+ * Decodes a general acknowledge packet into its sender, whether the request failed, and the command id
+ * The command id does not include the acknowledgement bit
  */
 inline static CANUniversalPacket_Acknowledge_Decoded_t
 CANUniversalPacket_Acknowledge_Decode(const CANPacket_t *packet) {

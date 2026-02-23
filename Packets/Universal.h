@@ -45,6 +45,7 @@ inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t sender, CANDe
 /**
  * Returns a packet that represents a general acknowledgement
  * Should be sent when an acknowledgment was requested but no specific acknowledge packet exists
+ * commandId should not include acknowledgement bit
  */
 inline static CANPacket_t CANUniversalPacket_Acknowledge(CANDevice_t sender, CANDevice_t device, bool failure, CANCommand_t commandId) {
     return (CANPacket_t){
