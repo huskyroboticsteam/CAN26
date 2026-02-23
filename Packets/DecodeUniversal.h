@@ -49,6 +49,7 @@ typedef struct {
     CANDevice_t sender;
     CANDevice_t receiver;
     bool failure;
+    CANCommand_t commandID;
 } CANUniversalPacket_Acknowledge_Decoded_t;
 
 /**
@@ -59,7 +60,8 @@ CANUniversalPacket_Acknowledge_Decode(const CANPacket_t *packet) {
     return (CANUniversalPacket_Acknowledge_Decoded_t){
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .receiver = packet->device,
-        .failure = (bool)packet->contents[0]
+        .failure = (bool)packet->contents[0],
+        .commandID = packet->contents[1],
     };
 }
 
