@@ -28,7 +28,7 @@ CANUniversalPacket_EStop_Decode(const CANPacket_t *packet) {
 typedef struct {
     CANDevice_t sender;
     CANDevice_t receiver;
-    uint8_t error;
+    uint32_t error;
     uint8_t state;
 } CANUniversalPacket_HeartBeat_Decoded_t;
 
@@ -37,12 +37,13 @@ typedef struct {
  */
 inline static CANUniversalPacket_HeartBeat_Decoded_t
 CANUniversalPacket_HeartBeat_Decode(const CANPacket_t *packet) {
-    return (CANUniversalPacket_HeartBeat_Decoded_t){
+    CANUniversalPacket_HeartBeat_Decoded_t result = {
         .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
         .receiver = packet->device,
-        .error = packet->contents[0],
-        .state = packet->contents[1]
+        .state = packet->contents[4]
     };
+    result.error = CANLoadUInt32(packet->contents + 0);
+    return result;
 }
 
 typedef struct {
