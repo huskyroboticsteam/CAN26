@@ -15,5 +15,5 @@
 #include "Packets/DecodeMotor.h"
 #include "Packets/Peripheral.h"
 #include "Packets/DecodePeripheral.h"
-#include "Packets/Packets/Power.h"
-#include "DecodePower.h"
+#include "Packets/Power.h"
+#include "Packets/DecodePower.h"
