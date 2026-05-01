@@ -9,11 +9,11 @@
 #include "CANCommandIDs.h"
 
 // CAN Decode/Encode Functions
-#include "Universal.h"
-#include "DecodeUniversal.h"
-#include "Motor.h"
-#include "DecodeMotor.h"
-#include "Peripheral.h"
-#include "DecodePeripheral.h"
-#include "Power.h"
+#include "Packets/Universal.h"
+#include "Packets/DecodeUniversal.h"
+#include "Packets/Motor.h"
+#include "Packets/DecodeMotor.h"
+#include "Packets/Peripheral.h"
+#include "Packets/DecodePeripheral.h"
+#include "Packets/Packets/Power.h"
 #include "DecodePower.h"
