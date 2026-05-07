@@ -27,6 +27,24 @@ CANPeripheralPacket_SetPWMDutyCycle_Decode(const CANPacket_t *packet) {
 
 typedef struct {
     CANDevice_t sender;
+    uint8_t peripheralID;
+    int8_t drive;
+} CANPeripheralPacket_SetLinearActuator_Decoded_t;
+
+/*
+Decodes a linear actuator control packet into its sender, id, and drive value.
+*/
+inline static CANPeripheralPacket_SetLinearActuator_Decoded_t
+CANPeripheralPacket_SetLinearActuator_Decode(const CANPacket_t *packet) {
+    return (CANPeripheralPacket_SetLinearActuator_Decoded_t){
+        .sender = (CANDevice_t){.deviceUUID = packet->senderUUID},
+        .peripheralID = packet->contents[0],
+        .drive = (int8_t)packet->contents[1]
+    };
+}
+
+typedef struct {
+    CANDevice_t sender;
     uint8_t red;
     uint8_t green;
     uint8_t blue;

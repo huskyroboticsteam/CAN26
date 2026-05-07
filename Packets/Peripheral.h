@@ -27,6 +27,20 @@ inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t sender
     CANStoreFloat32(result.contents + 1, dutyCycle);
     return result;
 }
+/**
+ * 
+ * Constructs a packet to run and set the direction of a linear actuator with given ID.
+ * To stop, set drive = 0, otherwise, set drive to any positive value for forwards, negative for reverse.
+ */
+inline static CANPacket_t CANPeripheralPacket_SetLinearActuator(CANDevice_t sender, CANDevice_t device, uint8_t peripheralID, int8_t drive) {
+    return (CANPacket_t){
+        .device = device,
+        .contentsLength = 2,
+        .command = CAN_COMMAND_ID__LINEAR_ACTUATOR_CONTROL,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
+        .contents = {peripheralID, drive}
+    };
+}
 
 /**
  * Constructs a packet to set the color of the rover LED strips needed for competition
