@@ -18,3 +18,4 @@
 #define CAN_COMMAND_ID__BLDC_AXIS_STATE           ((CANCommand_t)0x11)
 #define CAN_COMMAND_ID__PWM_DUTY_CYCLE            ((CANCommand_t)0x0f)
 #define CAN_COMMAND_ID__ROVER_LED_COLOR           ((CANCommand_t)0x10)
+#define CAN_COMMAND_ID__LINEAR_ACTUATOR_CONTROL   ((CANCommand_t)0x12)
