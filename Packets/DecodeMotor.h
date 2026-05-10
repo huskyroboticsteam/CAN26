@@ -164,7 +164,16 @@ typedef struct {
     CANDevice_t sender;
     CANDevice_t receiver;
     uint16_t endpointID;
-    uint32_t value;
+    union {
+        uint32_t value;
+
+        uint32_t value_uint32;
+        int32_t value_int32;
+        uint16_t value_uint16;
+        uint8_t value_uint8;
+        float value_float;
+        bool value_bool;
+    };
 } CANMotorPacket_BLDC_DirectReadResult_Decoded_t;
 
 /**
