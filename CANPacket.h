@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * Uniquely represents a device on the CAN network
  *
@@ -181,3 +184,8 @@ void CANStoreBFloat16(uint8_t *ptr, float value);
 void CANStoreUNorm24(uint8_t *ptr, float value);
 void CANStoreUNorm16(uint8_t *ptr, float value);
 void CANStoreUNorm8(uint8_t *ptr, float value);
+
+
+#ifdef __cplusplus
+}
+#endif

@@ -8,6 +8,20 @@
 #include "../CANPacket.h"
 
 #define CHIP_TYPE_STM32_G4XX         0x02
+#define CHIP_TYPE_TEENSY_4_X        0x03
+
+#ifndef CHIP_TYPE
+    #error "CHIP_TYPE is not defined. Define CHIP_TYPE in project settings or compiler flags."
+#endif
+
+
+#if CHIP_TYPE != CHIP_TYPE_STM32_G4XX && CHIP_TYPE != CHIP_TYPE_TEENSY_4_X
+    #error "Unsupported CHIP_TYPE selected."
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Generic pointer for CAN Handles, should cast to pointer of whatever handle given chipset uses for CAN
 typedef void *CANHandle_t;
@@ -36,3 +50,7 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *packet);
  *  @return 1 if message was present, 0 if no messages in FIFO, negative if error encountered.
  */
 int8_t CANPollAndReceive(CANHandle_t CANHandle, CANPacket_t *packet);
+
+#ifdef __cplusplus
+}
+#endif
