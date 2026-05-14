@@ -55,3 +55,58 @@ inline static CANPacket_t CANPeripheralPacket_SetRoverLEDColor(CANDevice_t sende
     };
 }
 
+inline static CANPacket_t CANPeripheralPacket_SetBrakes(CANDevice_t sender, CANDevice_t device, uint8_t brake_id, uint8_t state) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 2,
+        .command = CAN_COMMAND_ID__SET_BRAKE_CONTROL,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
+        .contents = {brake_id, state}
+    };
+}
+
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDRed(CANDevice_t sender, CANDevice_t device) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 0,
+        .command = CAN_COMMAND_ID__SET_LED_RED,
+        .senderUUID = ((CANDeviceUUID_t) sender.deviceUUID),
+    };
+}
+
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDBlue(CANDevice_t sender, CANDevice_t device) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 0,
+        .command = CAN_COMMAND_ID__SET_LED_BLUE,
+        .senderUUID = ((CANDeviceUUID_t) sender.deviceUUID),
+    };
+}
+
+inline static CANPacket_t CANPeripheralPacket_SetRoverFlashLEDGreen(CANDevice_t sender, CANDevice_t device) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 0,
+        .command = CAN_COMMAND_ID__SET_LED_GREEN_FLASH,
+        .senderUUID = ((CANDeviceUUID_t) sender.deviceUUID),
+    };
+}
+
+inline static CANPacket_t CANPeripheralPacket_SetRoverFlashLEDGreen(CANDevice_t sender, CANDevice_t device) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 0,
+        .command = CAN_COMMAND_ID__RESET,
+        .senderUUID = ((CANDeviceUUID_t) sender.deviceUUID),
+    };
+}
+
+inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t sender, CANDevice_t device, uint8_t servo_id, uint8_t servo_angle) {
+    return (CANPacket_t) {
+        .device = device,
+        .contentsLength = 2,
+        .command = CAN_COMMAND_ID__SERVO_ANGLE,
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
+        .contents = {servo_id, servo_angle}
+    };
+}
