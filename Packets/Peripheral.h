@@ -92,7 +92,7 @@ inline static CANPacket_t CANPeripheralPacket_SetRoverFlashLEDGreen(CANDevice_t 
     };
 }
 
-inline static CANPacket_t CANPeripheralPacket_SetRoverFlashLEDGreen(CANDevice_t sender, CANDevice_t device) {
+inline static CANPacket_t CANPeripheralPacket_SetReset(CANDevice_t sender, CANDevice_t device) {
     return (CANPacket_t) {
         .device = device,
         .contentsLength = 0,
