@@ -7,8 +7,11 @@
 
 #include "../CANPacket.h"
 
+
 #define CHIP_TYPE_STM32_G4XX         0x02
 #define CHIP_TYPE_TEENSY_4_X        0x03
+#define CHIP_TYPE_ESP32             0x04
+#define CAN_BAUD_RATE 125000
 
 #ifndef CHIP_TYPE
     #error "CHIP_TYPE is not defined. Define CHIP_TYPE in project settings or compiler flags."

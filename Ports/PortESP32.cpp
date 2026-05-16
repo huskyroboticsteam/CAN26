@@ -1,20 +1,16 @@
 
 
 #if defined(CHIP_TYPE) && CHIP_TYPE == CHIP_TYPE_ESP32
+
 #include "Port.h"
+#include "PortESP32.h"
 #include "../CANPacket.h"
 #include <string.h>
-#include <ESP32-TWAI-CAN.hpp>
+
 
 // Note: Define CAN26 specific universal error codes eventually
 #define SUCCESS 0
 #define ERROR 1
-
-typedef struct  {
-    int tx_pin;
-    int rx_pin;
-    CANDevice_t device;
-} ESP32CANHandle_t;
 
 static twai_filter_config_t createFilterForDevice(const CANDevice_t *device) {
     twai_filter_config_t filterConfig = {};
