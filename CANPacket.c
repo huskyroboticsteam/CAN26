@@ -250,7 +250,7 @@ void CANStoreUInt24(uint8_t *ptr, int32_t value) {
     if (!little_endian()) {
         value = bswap32(value);
     }
-    memcpy(ptr, (char *)&value + 1, 3);
+    memcpy(ptr, (char *)&value, 3);
 }
 
 /**
