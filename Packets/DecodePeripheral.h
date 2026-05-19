@@ -119,11 +119,13 @@ typedef struct {
 
 inline static CANPeripheralPacket_SetServoAngleDecoded_t
 CANPeripheralPacket_SetServoAngle_Decode(const CANPacket_t *packet) {
-    return (CANPeripheralPacket_SetServoAngleDecoded_t) {
+    uint16_t servo_id = CANLoadUInt16(packet->contents+0);
+    CANPeripheralPacket_SetServoAngleDecoded_t result = {
         .sender = (CANDevice_t) {.deviceUUID = packet->senderUUID},
-        .servo_id = packet->contents[0],
-        .servo_angle = packet->contents[1]
+        .servo_id = servo_id,
+        .servo_angle = packet->contents[2]
     };
+    return result;
 }
 
 typedef struct {

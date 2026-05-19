@@ -101,12 +101,14 @@ inline static CANPacket_t CANPeripheralPacket_SetReset(CANDevice_t sender, CANDe
     };
 }
 
-inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t sender, CANDevice_t device, uint8_t servo_id, uint8_t servo_angle) {
-    return (CANPacket_t) {
+inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t sender, CANDevice_t device, uint8_t servo_id, uint16_t servo_angle) {
+    CANPacket_t result = {
         .device = device,
-        .contentsLength = 2,
+        .contentsLength = 3,
         .command = CAN_COMMAND_ID__SERVO_ANGLE,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .contents = {servo_id, servo_angle}
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
+    CANStoreUInt16(result.contents + 0, servo_angle);
+    result.contents[2] = servo_id;
+    return result;
 }
