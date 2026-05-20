@@ -8,10 +8,10 @@
 #include "../CANCommandIDs.h"
 
 /**
- * Constructs a packet to report the current power status of the device, including 
- * voltage and current information and power consumption
+ * Constructs a packet to report the current power status of the device with the following:
+ * voltage, current, temperature (fahrenheit), and state of charge (percentage).
  */
-inline static CANPacket_t CANPowerPacket_PowerStatus(CANDevice_t sender, CANDevice_t device, float voltage, float current, float soc, int8_t temperature) {
+inline static CANPacket_t CANPowerPacket_PowerStatus(CANDevice_t sender, CANDevice_t device, float voltage, float current, float soc, uint8_t temperature) {
     CANPacket_t result = {
         .device = device,
         .contentsLength = 8,

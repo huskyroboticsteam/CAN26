@@ -12,7 +12,7 @@ typedef struct {
     float voltage;
     float current;
     float soc;
-    int8_t temperature;
+    uint8_t temperature;
 } CANPowerPacket_PowerStatus_Decoded_t;
 
 /**
@@ -26,7 +26,7 @@ CANPowerPacket_PowerStatus_Decode(const CANPacket_t *packet) {
         .voltage = CANLoadFloat16(packet->contents + 0),
         .current = CANLoadFloat16(packet->contents + 2),
         .soc = CANLoadUNorm8(packet->contents + 4),
-        .temperature = (int8_t)packet->contents[5]
+        .temperature = (uint8_t)packet->contents[5]
     };
 }
 
