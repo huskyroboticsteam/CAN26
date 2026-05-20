@@ -25,3 +25,5 @@
 #define CAN_COMMAND_ID__SET_LED_GREEN_FLASH       ((CANCommand_t) 0x16)
 #define CAN_COMMAND_ID__RESET                     ((CANCommand_t) 0x17)
 #define CAN_COMMAND_ID__SERVO_ANGLE                ((CANCommand_t) 0x18)
+#define CAN_COMMAND_ID__POWER_STATUS              ((CANCommand_t)0x19)
+#define CAN_COMMAND_ID__POWER_STATUS_GET          ((CANCommand_t)0x1a)

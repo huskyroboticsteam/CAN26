@@ -7,8 +7,9 @@
  *        
  */
 
-#if defined(CHIP_TYPE) && CHIP_TYPE == CHIP_TYPE_STM32_G4XX
 #include "Port.h"
+
+#if defined(CHIP_TYPE) && CHIP_TYPE == CHIP_TYPE_STM32_G4XX
 #include "../CANPacket.h"
 #include "stm32g4xx_hal.h"
 #include <stdint.h>
