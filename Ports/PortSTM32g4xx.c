@@ -72,6 +72,12 @@ uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t *CANDevice) {
         HAL_FDCAN_ConfigFilter(hfdcan, &filterConfig);
     }
 
+    // Need to call this to actually make filter reject messages
+    HAL_FDCAN_ConfigGlobalFilter(hfdcan,
+    FDCAN_REJECT,         
+    FDCAN_REJECT,         
+    FDCAN_FILTER_REMOTE,  
+    FDCAN_FILTER_REMOTE); 
 
     return (uint8_t)HAL_FDCAN_Start(hfdcan); // Needed to activate CAN node, must be done after configuration of filters and optional features. 
 
