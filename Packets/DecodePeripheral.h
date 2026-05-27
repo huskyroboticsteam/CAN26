@@ -32,7 +32,7 @@ typedef struct {
 } CANPeripheralPacket_SetLinearActuator_Decoded_t;
 
 /*
-Decodes a linear actuator control packet into its sender, id, and drive value.
+ * Decodes a linear actuator control packet into its sender, id, and drive value.
 */
 inline static CANPeripheralPacket_SetLinearActuator_Decoded_t
 CANPeripheralPacket_SetLinearActuator_Decode(const CANPacket_t *packet) {
@@ -113,23 +113,6 @@ CANPeripheralPacket_SetRoverLEDGreenFlash_Decode(const CANPacket_t *packet) {
 
 typedef struct {
     CANDevice_t sender;
-    uint8_t servo_id;
-    uint8_t servo_angle;
-} CANPeripheralPacket_SetServoAngleDecoded_t;
-
-inline static CANPeripheralPacket_SetServoAngleDecoded_t
-CANPeripheralPacket_SetServoAngle_Decode(const CANPacket_t *packet) {
-    uint16_t servo_id = CANLoadUInt16(packet->contents+0);
-    CANPeripheralPacket_SetServoAngleDecoded_t result = {
-        .sender = (CANDevice_t) {.deviceUUID = packet->senderUUID},
-        .servo_id = servo_id,
-        .servo_angle = packet->contents[2]
-    };
-    return result;
-}
-
-typedef struct {
-    CANDevice_t sender;
 } CANPeripheralPacket_SetReset_Decoded_t;
 
 inline static CANPeripheralPacket_SetReset_Decoded_t
@@ -138,3 +121,24 @@ CANPeripheralPacket_SetReset_Decode(const CANPacket_t *packet) {
         .sender = (CANDevice_t) {.deviceUUID = packet->senderUUID}
     };
 }
+
+typedef struct {
+    CANDevice_t sender;
+    uint8_t servo_id;
+    float servo_angle;
+} CANPeripheralPacket_SetServoAngleDecoded_t;
+
+/*
+ * Decodes a servo angle packet into its sender, id, and servo_angle
+*/
+inline static CANPeripheralPacket_SetServoAngleDecoded_t
+CANPeripheralPacket_SetServoAngle_Decode(const CANPacket_t *packet) {
+    float servo_angle = CANLoadUNorm24(packet->contents + 1);
+    CANPeripheralPacket_SetServoAngleDecoded_t result = {
+        .sender = (CANDevice_t) {.deviceUUID = packet->senderUUID},
+        .servo_id = packet->contents[0],
+        .servo_angle = servo_angle
+    };
+    return result;
+}
+

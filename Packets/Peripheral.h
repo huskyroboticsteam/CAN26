@@ -38,7 +38,7 @@ inline static CANPacket_t CANPeripheralPacket_SetLinearActuator(CANDevice_t send
         .contentsLength = 2,
         .command = CAN_COMMAND_ID__LINEAR_ACTUATOR_CONTROL,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .contents = {peripheralID, drive}
+        .contents = {peripheralID, (uint8_t)drive}
     };
 }
 
@@ -101,14 +101,19 @@ inline static CANPacket_t CANPeripheralPacket_SetReset(CANDevice_t sender, CANDe
     };
 }
 
-inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t sender, CANDevice_t device, uint8_t servo_id, uint16_t servo_angle) {
+/**
+ * Constructs a packet to set the pwm angle of the device with the given servo ID
+ * servo_angle is in revolutions
+ * servo_angle is clipped between 0-1
+ */
+inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t sender, CANDevice_t device, uint8_t servo_id, float servo_angle) {
     CANPacket_t result = {
         .device = device,
-        .contentsLength = 3,
+        .contentsLength = 4,
         .command = CAN_COMMAND_ID__SERVO_ANGLE,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
+        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
+        .contents = {servo_id}
     };
-    CANStoreUInt16(result.contents + 0, servo_angle);
-    result.contents[2] = servo_id;
+    CANStoreUNorm24(result.contents + 1, servo_angle);
     return result;
 }
