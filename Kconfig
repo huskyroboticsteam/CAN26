@@ -9,6 +9,16 @@ menu "CAN Config"
         default 5
         help
             Set the RX GPIO pin
+    config TX_POOL_SIZE
+        int "TX pool size"
+        default 50
+        help
+            The number of TX frames to hold while awaiting transmission
+    config RX_FIFO_SIZE
+        int "RX FIFO size"
+        default 50
+        help
+            The number of CANPackets to hold while awaiting CANPollAndReceive reads
     config TEST_MODE
         bool "Loopback and self-test"
         default n

@@ -30,27 +30,23 @@
 
 #define TAG "CAN"
 
-extern uint32_t twai_err_flags;
+// ESP-IDF only maintains a FIFO of TX frame pointers. We need to store the frames in a storage pool
+// until the transmission complete callback (twai_tx_cb) releases them
+static twai_frame_t frame_pool[CONFIG_TX_POOL_SIZE];  // hold up to TX_POOL_LEN frames
+static uint8_t data_pool[CONFIG_TX_POOL_SIZE][8];     // hold TX_POOL_LEN arrays, each holding 8 bytes
+static QueueHandle_t free_q;                  // hold the available pool indexes
 
-// static handle for functions to use instead of CANHandle_t arg
+// Static handle that is used instead of CANHandle_t args
 static twai_node_handle_t twai_handle = NULL;
 
-static QueueHandle_t rx_q;    // holds CANPackets until CANPollAndReceive is called
-static QueueHandle_t done_q;  // holds pointers to frames that need to be deleted after tx_done
+// Hold CANPackets until CANPollAndReceive can return them
+static QueueHandle_t rx_q;
 
-// ESP32 SoCs only have 2 hardware CAN filters.
-// We need to save the domain bits and filter them in software.
+// ESP32 SoCs only have 2 HW CAN filters; we need to save our domain bits and filter them in software
 static uint8_t our_domains;
 
-static void frame_delete_task(void* arg) {
-    twai_frame_t* frame;
-    while (1) {
-        xQueueReceive(done_q, &frame, portMAX_DELAY);
-        free(frame->buffer);
-        free(frame);
-    }
-}
-
+// Error callback
+extern uint32_t twai_err_flags;  // TODO: proper API to expose these flags
 static bool twai_error_cb(twai_node_handle_t handle, const twai_error_event_data_t* edata, void* user_ctx) {
     twai_err_flags = edata->err_flags.val;
     return false;
@@ -61,10 +57,11 @@ static bool twai_tx_cb(twai_node_handle_t handle, const twai_tx_done_event_data_
     // the frame that was transmitted and needs to be deleted
     const twai_frame_t* tx_frame = edata->done_tx_frame;
 
-    // queue the frame for deletion
-    BaseType_t yield_from_isr = pdFALSE;
-    xQueueSendFromISR(done_q, &tx_frame, &yield_from_isr);
+    // pointer arithmetic to get the pool index to release
+    uint8_t idx = (uint8_t)(tx_frame - frame_pool);
 
+    BaseType_t yield_from_isr = pdFALSE;
+    xQueueSendFromISR(free_q, &idx, &yield_from_isr);
     return yield_from_isr;
 }
 
@@ -95,9 +92,9 @@ static bool twai_rx_cb(twai_node_handle_t handle, const twai_rx_done_event_data_
     if (dlc < 2 || dlc > 8)
         return false;
 
-    // compose sender device
+    // compose target device (us)
     uint16_t id = rx_frame.header.id & 0x7FF;  // get lowest 11 bits
-    CANDevice_t sender = {
+    CANDevice_t us = {
         .peripheralDomain = id & 0x1,
         .motorDomain = (id >> 1) & 0x1,
         .powerDomain = (id >> 2) & 0x1,
@@ -106,7 +103,7 @@ static bool twai_rx_cb(twai_node_handle_t handle, const twai_rx_done_event_data_
 
     // compose CAN packet
     CANPacket_t packet = {
-        .device = sender,
+        .device = us,
         .priority = id & 0x400 ? CAN_PRIORITY_LOW : CAN_PRIORITY_HIGH,
         .contentsLength = dlc - 2,
         .command = rx_data[0],
@@ -126,8 +123,8 @@ uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t* device) {
     twai_onchip_node_config_t node_config = {
         .io_cfg.tx = CONFIG_TX_GPIO,
         .io_cfg.rx = CONFIG_RX_GPIO,
-        .bit_timing.bitrate = 125000,  // 125 kbps bitrate TODO: what bitrate?
-        .tx_queue_depth = 5,
+        .bit_timing.bitrate = 125000,  // 125 kbps bitrate
+        .tx_queue_depth = CONFIG_TX_POOL_SIZE,
     };
 
 #if CONFIG_TEST_MODE
@@ -153,14 +150,17 @@ uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t* device) {
         return ret;
 
     // initialize queues
-    rx_q = xQueueCreate(20, sizeof(CANPacket_t));
+    rx_q = xQueueCreate(CONFIG_RX_FIFO_SIZE, sizeof(CANPacket_t));
     if (!rx_q)
         return 1;
-    done_q = xQueueCreate(40, sizeof(twai_frame_t*));
-    if (!done_q) {
+    free_q = xQueueCreate(CONFIG_TX_POOL_SIZE, sizeof(uint8_t));
+    if (!free_q) {
         vQueueDelete(rx_q);
         return 1;
     }
+    // fill the pool queue with available indexes (all)
+    for (uint8_t i = 0; i < CONFIG_TX_POOL_SIZE; i++)
+        xQueueSend(free_q, &i, 0);
 
     // filter 1: UUID matches our own
     uint16_t id_1 = device->deviceUUID << 3;  // filter by this device's UUID
@@ -179,9 +179,6 @@ uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t* device) {
     // save our domains for software filtering in the RX callback
     our_domains = (device->powerDomain << 2) | (device->motorDomain << 1) | device->peripheralDomain;
 
-    // start a task to delete frames after they have been transmitted
-    xTaskCreate(frame_delete_task, "Frame delete", 2000, NULL, 5, NULL);
-
     // start the TWAI controller
     return twai_node_enable(twai_handle);
 }
@@ -190,16 +187,12 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t* packet) {
     if (packet->contentsLength > 6)
         return 1;
 
-    // allocate heap memory
-    twai_frame_t* frame = calloc(1, sizeof(twai_frame_t));
-    if (!frame)
-        return 1;
-
-    uint8_t* data = calloc(8, sizeof(uint8_t));
-    if (!data) {
-        free(frame);
-        return 1;
-    }
+    // get an index from the frame/data pools to build the frame into
+    uint8_t idx;
+    if (xQueueReceive(free_q, &idx, 0) != pdTRUE)
+        return 1;  // pool full
+    twai_frame_t* frame = &frame_pool[idx];
+    uint8_t* data = data_pool[idx];
 
     // set the data
     data[0] = packet->command;
@@ -212,15 +205,14 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t* packet) {
     frame->buffer = data;
     frame->buffer_len = packet->contentsLength + 2;
 
-    // queue a pointer to the frame for TX; this function returns before transmission is complete
+    // queue a pointer to the TX frame; this function returns immediately
     esp_err_t ret = twai_node_transmit(twai_handle, frame, 0);
     if (ret != ESP_OK) {
-        free(frame->buffer);
-        free(frame);
+        xQueueSend(free_q, &idx, 0);  // return the pool slot
         return ret;
     }
 
-    ESP_LOGI(TAG, "Sending: %d, %d; %d, %d, %d", frame->buffer[0], frame->buffer[1], frame->buffer[2], frame->buffer[3], frame->buffer[4]);
+    ESP_LOGD(TAG, "Sending: %d, %d; %d, %d, %d", frame->buffer[0], frame->buffer[1], frame->buffer[2], frame->buffer[3], frame->buffer[4]);
     return 0;
 }
 
