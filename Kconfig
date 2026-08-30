@@ -1,0 +1,17 @@
+menu "CAN Config"
+    config TX_GPIO
+        int "TX pin"
+        default 4
+        help
+            Set the TX GPIO pin
+    config RX_GPIO
+        int "RX pin"
+        default 5
+        help
+            Set the RX GPIO pin
+    config TEST_MODE
+        bool "Loopback and self-test"
+        default n
+        help
+            Enable the loopback path to receive transmitted messages without a CAN transceiver, and don't require acknowledgements to prevent retry attempts. Use for testing.
+endmenu
