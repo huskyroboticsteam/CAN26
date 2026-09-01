@@ -15,16 +15,16 @@ typedef void *CANHandle_t;
 
 /** 
  * Initialize the CAN for this device with filters and the receive queue.
- * @param hfdcan Pointer for STM32's FDCAN handle
- * @param CANDevice This device's UUID and domain bits.
+ * @param CANHandle Pointer for STM32's FDCAN handle
+ * @param device This device's UUID and domain bits.
  * @return 0 for succesful setup, error codes otherwise.
  */
-uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t *device);
+uint8_t CANInit(CANHandle_t CANHandle, const CANDevice_t *device);
 
 /**
  *  Send a CAN Packet for hardware transmission.
  *  @param CANHandle Pointer for chip specific CAN Handle structure
- *  @param RxPacket Pointer to CAN26 packet struct already filled with data.
+ *  @param packet Pointer to CAN26 packet struct already filled with data.
  *  @return 0 if no error encountered, error codes otherwise.
  */
 uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *packet);
@@ -32,7 +32,7 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t *packet);
 /**
  *  Check FIFO for received CAN Packets and parse first if present.
  *  @param CANHandle Pointer for chip specific CAN Handle structure
- *  @param RxPacket Pointer to CAN26 packet struct to fill with received data
+ *  @param packet Pointer to CAN26 packet struct to fill with received data
  *  @return 1 if message was present, 0 if no messages in FIFO, negative if error encountered.
  */
 int8_t CANPollAndReceive(CANHandle_t CANHandle, CANPacket_t *packet);

@@ -17,12 +17,12 @@
  *       so this port owns a static handle.
  */
 
-#include <freertos/FreeRTOS.h>
-#include <string.h>
-
 #include "Port.h"
 
 #if defined(CONFIG_IDF_TARGET)
+
+#include <freertos/FreeRTOS.h>
+#include <string.h>
 
 #include "esp_log.h"
 #include "esp_twai.h"
@@ -34,7 +34,7 @@
 // until the transmission complete callback (twai_tx_cb) releases them
 static twai_frame_t frame_pool[CONFIG_TX_POOL_SIZE];  // hold up to TX_POOL_LEN frames
 static uint8_t data_pool[CONFIG_TX_POOL_SIZE][8];     // hold TX_POOL_LEN arrays, each holding 8 bytes
-static QueueHandle_t free_q;                  // hold the available pool indexes
+static QueueHandle_t free_q;                          // hold the available pool indexes
 
 // Static handle that is used instead of CANHandle_t args
 static twai_node_handle_t twai_handle = NULL;
@@ -46,7 +46,7 @@ static QueueHandle_t rx_q;
 static uint8_t our_domains;
 
 // Error callback
-extern uint32_t twai_err_flags;  // TODO: proper API to expose these flags
+static uint32_t twai_err_flags;  // TODO: proper API to expose these flags
 static bool twai_error_cb(twai_node_handle_t handle, const twai_error_event_data_t* edata, void* user_ctx) {
     twai_err_flags = edata->err_flags.val;
     return false;
@@ -118,7 +118,7 @@ static bool twai_rx_cb(twai_node_handle_t handle, const twai_rx_done_event_data_
     return yield_from_isr;  // signal if a higher-priority task was woken
 }
 
-uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t* device) {
+uint8_t CANInit(CANHandle_t CANHandle, const CANDevice_t* device) {
     // TWAI config
     twai_onchip_node_config_t node_config = {
         .io_cfg.tx = CONFIG_TX_GPIO,
@@ -212,7 +212,6 @@ uint8_t CANSend(CANHandle_t CANHandle, const CANPacket_t* packet) {
         return ret;
     }
 
-    ESP_LOGD(TAG, "Sending: %d, %d; %d, %d, %d", frame->buffer[0], frame->buffer[1], frame->buffer[2], frame->buffer[3], frame->buffer[4]);
     return 0;
 }
 

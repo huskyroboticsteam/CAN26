@@ -32,7 +32,7 @@ static const FDCAN_TxHeaderTypeDef txHeaderCANStandard = {
 };
 
 
-uint8_t CANInit(CANHandle_t CANHandle, CANDevice_t *CANDevice) {
+uint8_t CANInit(CANHandle_t CANHandle, const CANDevice_t *CANDevice) {
     if (!CANHandle || !CANDevice) {
         return HAL_ERROR;
     }
