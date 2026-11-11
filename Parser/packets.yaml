@@ -1,0 +1,43 @@
+# CAN Packet Definitions
+#
+# YAML keys, where those marked ? are optional:
+# - name: Name of packet
+#   comment?: Human-readable description of packet
+#   signals: Array of packet fields
+#     - { name: Signal name,
+#         start: Starting bit index of field,
+#         size: Number of bits in field,
+#         type: uint | int | float | bool,
+#         min?: Minimum value,
+#         max?: Maximum value,
+#         comment?: Human-readable description of field
+#       }
+---
+
+version: 0.0.0
+messages:
+  - name: CANMotorPacket_LimitSwitchAlert
+    comment: Send an update from a limit switch to the given device
+    commandId: 5
+    signals:
+      - { name: command,      start: 0,  size: 8, type: uint }
+      - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
+      - { name: motorId,      start: 16, size: 8, type: uint }
+      - { name: switchStatus, start: 24, size: 8, type: bool }
+
+  - name: CANMotorPacket_Stepper_DriveRevolutions
+    comment: Tell a stepper motor to move a given number of revolutions from the current position
+    commandId: 6
+    signals:
+      - { name: command,      start: 0,  size: 8, type: uint }
+      - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
+      - { name: numRevolutions, start: 16, size: 32, type: float, comment: "Positive: CW; Negative: CCW"}
+
+  - name: CANPeripheralPacket_SetPWMDutyCycle
+    comment: Set the duty cycle of a device
+    commandId: 15
+    signals:
+      - { name: command,      start: 0,  size: 8, type: uint }
+      - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
+      - { name: peripheralId, start: 16, size: 8,  type: uint }
+      - { name: dutyCycle,    start: 24, size: 32, type: float, min: 0, max: 100, comment: "Duty cycle, clamped to [0-100]" }

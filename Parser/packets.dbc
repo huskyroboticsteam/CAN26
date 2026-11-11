@@ -1,0 +1,34 @@
+VERSION "0.0.0"
+
+NS_:
+	CM_
+	SIG_VALTYPE_
+
+BS_:
+
+BU_:
+
+
+BO_ 5 CANMotorPacket_LimitSwitchAlert: 8 Vector__XXX
+	SG_ command : 0|8@1+ (1,0) [0|255] "uint8" Vector__XXX
+	SG_ senderUuid : 8|8@1+ (1,0) [0|127] "uint8" Vector__XXX
+	SG_ motorId : 16|8@1+ (1,0) [0|255] "uint8" Vector__XXX
+	SG_ switchStatus : 24|8@1+ (1,0) [0|24] "bool" Vector__XXX
+CM_ BO_ 5 "Send an update from a limit switch to the given device";
+
+
+BO_ 6 CANMotorPacket_Stepper_DriveRevo: 8 Vector__XXX
+	SG_ command : 0|8@1+ (1,0) [0|255] "uint8" Vector__XXX
+	SG_ senderUuid : 8|8@1+ (1,0) [0|127] "uint8" Vector__XXX
+	SG_ numRevolutions : 16|32@1- (1,0) [0|0] "float32" Vector__XXX
+CM_ BO_ 6 "Tell a stepper motor to move a given number of revolutions from the current position";
+CM_ SG_ 6 numRevolutions "Positive: CW; Negative: CCW";
+
+
+BO_ 15 CANPeripheralPacket_SetPWMDutyCy: 8 Vector__XXX
+	SG_ command : 0|8@1+ (1,0) [0|255] "uint8" Vector__XXX
+	SG_ senderUuid : 8|8@1+ (1,0) [0|127] "uint8" Vector__XXX
+	SG_ peripheralId : 16|8@1+ (1,0) [0|128] "uint8" Vector__XXX
+	SG_ dutyCycle : 24|32@1- (1,0) [0|100] "float" Vector__XXX
+CM_ BO_ 15 "Set the duty cycle of the device";
+SIG_VALTYPE_ 15 dutyCycle : 1;

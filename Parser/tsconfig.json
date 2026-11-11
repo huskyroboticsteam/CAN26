@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es2024",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "outDir": "out",
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "."
+    ]
+}
