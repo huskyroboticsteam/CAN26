@@ -18,6 +18,9 @@ export function genC(defs: PacketDefs) {
 
     const messages = defs.messages;
     for (let msg of messages) {
+        // write out function comment
+        fs.appendFileSync(path, `// ${msg.comment}\n`);
+
         // write out function header
         const filteredSignals = msg.signals.filter(e => e.name !== "command" && e.name !== "senderUuid");
         fs.appendFileSync(path, cFunctionHeader(msg.name, filteredSignals));

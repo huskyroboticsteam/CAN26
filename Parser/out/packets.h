@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "../../CANPacket.h"
 
+// Send an update from a limit switch to the given device
 inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t sender, CANDevice_t device, uint8_t motorId, bool switchStatus) {
     CANPacket_t res = {
         .device = device,
@@ -17,6 +18,7 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t sender, CA
     return res;
 }
 
+// Tell a stepper motor to move a given number of revolutions from the current position
 inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t sender, CANDevice_t device, float numRevolutions) {
     CANPacket_t res = {
         .device = device,
@@ -26,6 +28,7 @@ inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t se
     return res;
 }
 
+// Set the duty cycle of a device
 inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t sender, CANDevice_t device, uint8_t peripheralId, float dutyCycle) {
     CANPacket_t res = {
         .device = device,
