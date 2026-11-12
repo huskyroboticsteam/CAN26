@@ -6,7 +6,7 @@
 #pragma once
 
 #include <stdint.h>
-#include <string>
+#include <string.h>
 #include "../../CANPacket.h"
 
 // Test packet definition
@@ -69,6 +69,8 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t device, ui
     contents |= valueInPos;
 
     // switchStatus
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)switchStatus & sizeMask) << 24;
     contents |= valueInPos;
 
     CANPacket_t res = (CANPacket_t){
