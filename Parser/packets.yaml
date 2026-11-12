@@ -16,6 +16,15 @@
 
 version: 0.0.0
 messages:
+  - name: SillyPacket
+    comment: "Test packet definition"
+    commandId: 12
+    signals:
+      - { name: command, start: 0,  size: 8, type: uint }
+      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
+      - { name: A, start: 20, size: 9, type: uint }
+      - { name: B, start: 29, size: 25, type: uint }
+
   - name: CANMotorPacket_LimitSwitchAlert
     comment: Send an update from a limit switch to the given device
     commandId: 5

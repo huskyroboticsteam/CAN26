@@ -6,35 +6,147 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 #include "../../CANPacket.h"
 
-// Send an update from a limit switch to the given device
-inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t sender, CANDevice_t device, uint8_t motorId, bool switchStatus) {
-    CANPacket_t res = {
+// Test packet definition
+inline static CANPacket_t SillyPacket(CANDevice_t device, uint8_t senderUuid, uint16_t A, uint32_t B) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)12 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // A
+    sizeMask = ((1ULL << 9) - 1);
+    valueInPos = ((uint64_t)A & sizeMask) << 20;
+    contents |= valueInPos;
+
+    // B
+    sizeMask = ((1ULL << 25) - 1);
+    valueInPos = ((uint64_t)B & sizeMask) << 29;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
         .device = device,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .command = 5,
-        .contents = {motorId, switchStatus}};
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Send an update from a limit switch to the given device
+inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t device, uint8_t senderUuid, uint8_t motorId, bool switchStatus) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)5 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // motorId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)motorId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // switchStatus
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
     return res;
 }
 
 // Tell a stepper motor to move a given number of revolutions from the current position
-inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t sender, CANDevice_t device, float numRevolutions) {
-    CANPacket_t res = {
+inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t device, uint8_t senderUuid, float numRevolutions) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)6 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // numRevolutions
+    memcpy(&floatBits, &numRevolutions, 4);
+    valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
         .device = device,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .command = 6,
-        .contents = {numRevolutions}};
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
     return res;
 }
 
 // Set the duty cycle of a device
-inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t sender, CANDevice_t device, uint8_t peripheralId, float dutyCycle) {
-    CANPacket_t res = {
+inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t device, uint8_t senderUuid, uint8_t peripheralId, float dutyCycle) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)15 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // peripheralId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)peripheralId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // dutyCycle
+    memcpy(&floatBits, &dutyCycle, 4);
+    valueInPos = (uint64_t)floatBits << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
         .device = device,
-        .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID),
-        .command = 15,
-        .contents = {peripheralId, dutyCycle}};
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
     return res;
 }
 
