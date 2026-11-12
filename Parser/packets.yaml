@@ -206,6 +206,7 @@ messages:
   - name: CANPowerPacket_GetPowerStatus
     comment: Request power status
     commandId: 26
+    ack: true
     signals:
       - { name: command,    start: 0, size: 8, type: uint }
       - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
