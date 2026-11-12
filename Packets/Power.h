@@ -14,7 +14,7 @@
 inline static CANPacket_t CANPowerPacket_PowerStatus(CANDevice_t sender, CANDevice_t device, float voltage, float current, float soc, uint8_t temperature) {
     CANPacket_t result = {
         .device = device,
-        .contentsLength = 8,
+        .contentsLength = 6,
         .command = CAN_COMMAND_ID__POWER_STATUS,
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
@@ -32,7 +32,7 @@ inline static CANPacket_t CANPowerPacket_GetPowerStatus(CANDevice_t sender, CAND
     return (CANPacket_t){
         .device = device,
         .contentsLength = 0,
-        .command = CAN_COMMAND_ID__POWER_STATUS_GET,
+        .command = CAN_ACK(CAN_COMMAND_ID__POWER_STATUS_GET),
         .senderUUID = ((CANDeviceUUID_t)sender.deviceUUID)
     };
 }
