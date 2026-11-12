@@ -9,44 +9,7 @@
 #include <string.h>
 #include "../../CANPacket.h"
 
-// Test packet definition
-inline static CANPacket_t SillyPacket(CANDevice_t device, uint8_t senderUuid, uint16_t A, uint32_t B) {
-    uint64_t contents = 0;
-    uint64_t sizeMask;
-    uint64_t valueInPos;
-    uint32_t floatBits;
-
-    // command
-    sizeMask = ((1ULL << 8) - 1);
-    valueInPos = ((uint64_t)12 & sizeMask) << 0;
-    contents |= valueInPos;
-
-    // senderUuid
-    sizeMask = ((1ULL << 8) - 1);
-    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
-    contents |= valueInPos;
-
-    // A
-    sizeMask = ((1ULL << 9) - 1);
-    valueInPos = ((uint64_t)A & sizeMask) << 20;
-    contents |= valueInPos;
-
-    // B
-    sizeMask = ((1ULL << 25) - 1);
-    valueInPos = ((uint64_t)B & sizeMask) << 29;
-    contents |= valueInPos;
-
-    CANPacket_t res = (CANPacket_t){
-        .device = device,
-    };
-    uint8_t* data = &res.command;
-    for (int i = 0; i < 8; i++)
-        data[i] = (uint8_t)(contents >> (8 * i));
-
-    return res;
-}
-
-// Send an update from a limit switch to the given device
+// Send an update from a limit switch
 inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t device, uint8_t senderUuid, uint8_t motorId, bool switchStatus) {
     uint64_t contents = 0;
     uint64_t sizeMask;
@@ -83,7 +46,7 @@ inline static CANPacket_t CANMotorPacket_LimitSwitchAlert(CANDevice_t device, ui
     return res;
 }
 
-// Tell a stepper motor to move a given number of revolutions from the current position
+// Tell the stepper motor to move a given number of revolutions from the current position
 inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t device, uint8_t senderUuid, float numRevolutions) {
     uint64_t contents = 0;
     uint64_t sizeMask;
@@ -103,6 +66,324 @@ inline static CANPacket_t CANMotorPacket_Stepper_DriveRevolutions(CANDevice_t de
     // numRevolutions
     memcpy(&floatBits, &numRevolutions, 4);
     valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the control mode and input mode of the BLDC motor
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputMode(CANDevice_t device, uint8_t senderUuid, uint8_t controlMode, uint8_t inputMode) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)7 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // controlMode
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)controlMode & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // inputMode
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)inputMode & sizeMask) << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the destination position and feed forward velocity of the BLDC motor. Motor should already be in position control mode.
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputPosition(CANDevice_t device, uint8_t senderUuid, float position, uint16_t feedForwardVelocity) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)8 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // position
+    memcpy(&floatBits, &position, 4);
+    valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    // feedForwardVelocity
+    sizeMask = ((1ULL << 16) - 1);
+    valueInPos = ((uint64_t)feedForwardVelocity & sizeMask) << 48;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the destination velocity and feed forward torque of the BLDC motor. Motor should already be in velocity control mode.
+inline static CANPacket_t CANMotorPacket_BLDC_SetInputVelocity(CANDevice_t device, uint8_t senderUuid, float velocity, float feedForwardTorque) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)9 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // velocity
+    memcpy(&floatBits, &velocity, 4);
+    valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    // feedForwardTorque
+    memcpy(&floatBits, &feedForwardTorque, 4);
+    valueInPos = (uint64_t)floatBits << 48;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Directly write to ODrive registers, setting the endpointId to the given value
+inline static CANPacket_t CANMotorPacket_BLDC_DirectWrite(CANDevice_t device, uint8_t senderUuid, uint16_t endpointId, uint32_t value) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)10 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // endpointId
+    sizeMask = ((1ULL << 16) - 1);
+    valueInPos = ((uint64_t)endpointId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // value
+    sizeMask = ((1ULL << 32) - 1);
+    valueInPos = ((uint64_t)value & sizeMask) << 32;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Request to directly read an ODrive register. Response is CANMotorPacket_BLDC_DirectReadResult
+inline static CANPacket_t CANMotorPacket_BLDC_DirectRead(CANDevice_t device, uint8_t senderUuid, uint16_t endpointId) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)11 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // endpointId
+    sizeMask = ((1ULL << 16) - 1);
+    valueInPos = ((uint64_t)endpointId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Response to CANMotorPacket_BLDC_DirectRead. Contains the register value and the endpoint it was read from (to keep ordering if responses get reordered)
+inline static CANPacket_t CANMotorPacket_BLDC_DirectReadResult(CANDevice_t device, uint8_t senderUuid, uint16_t endpointId, uint32_t value) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)12 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // endpointId
+    sizeMask = ((1ULL << 16) - 1);
+    valueInPos = ((uint64_t)endpointId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // value
+    sizeMask = ((1ULL << 32) - 1);
+    valueInPos = ((uint64_t)value & sizeMask) << 32;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Request encoder estimates from the device. Response is CANMotorPacket_BLDC_EncoderEstimates
+inline static CANPacket_t CANMotorPacket_BLDC_GetEncoderEstimates(CANDevice_t device, uint8_t senderUuid, uint8_t encoderId) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)13 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // encoderId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)encoderId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Encoder estimates from a given encoder, sent as a response to CANMotorPacket_BLDC_GetEncoderEstimates
+inline static CANPacket_t CANMotorPacket_BLDC_EncoderEstimates(CANDevice_t device, uint8_t senderUuid, float position, float velocity) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)14 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // position
+    memcpy(&floatBits, &position, 4);
+    valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    // velocity
+    memcpy(&floatBits, &velocity, 4);
+    valueInPos = (uint64_t)floatBits << 40;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the axis state of an ODrive BLDC
+inline static CANPacket_t CANMotorPacket_BLDC_SetAxisState(CANDevice_t device, uint8_t senderUuid, uint32_t axisState) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)17 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // axisState
+    sizeMask = ((1ULL << 32) - 1);
+    valueInPos = ((uint64_t)axisState & sizeMask) << 16;
     contents |= valueInPos;
 
     CANPacket_t res = (CANPacket_t){
@@ -152,3 +433,502 @@ inline static CANPacket_t CANPeripheralPacket_SetPWMDutyCycle(CANDevice_t device
     return res;
 }
 
+// Run and set the direction of a linear actuator
+inline static CANPacket_t CANPeripheralPacket_SetLinearActuator(CANDevice_t device, uint8_t senderUuid, uint8_t peripheralId, int8_t drive) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)18 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // peripheralId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)peripheralId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // drive
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)drive & sizeMask) << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the color of the rover LED strips
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDColor(CANDevice_t device, uint8_t senderUuid, uint8_t red, uint8_t green, uint8_t blue) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)16 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // red
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)red & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // green
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)green & sizeMask) << 24;
+    contents |= valueInPos;
+
+    // blue
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)blue & sizeMask) << 32;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the state of the brake with the given ID
+inline static CANPacket_t CANPeripheralPacket_SetBrakes(CANDevice_t device, uint8_t senderUuid, uint8_t brakeId, uint8_t state) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)19 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // brakeId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)brakeId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // state
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)state & sizeMask) << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the rover LEDs to red
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDRed(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)20 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the rover LEDs to blue
+inline static CANPacket_t CANPeripheralPacket_SetRoverLEDBlue(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)21 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the rover LEDs to flashing green
+inline static CANPacket_t CANPeripheralPacket_SetRoverFlashLEDGreen(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)22 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Reset the device
+inline static CANPacket_t CANPeripheralPacket_SetReset(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)23 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Set the PWM angle of the servo with the given ID
+inline static CANPacket_t CANPeripheralPacket_SetServoAngle(CANDevice_t device, uint8_t senderUuid, uint8_t servoId, float servoAngle) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)24 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // servoId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)servoId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // servoAngle
+    memcpy(&floatBits, &servoAngle, 4);
+    valueInPos = (uint64_t)floatBits << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Report the current power status of the device
+inline static CANPacket_t CANPowerPacket_PowerStatus(CANDevice_t device, uint8_t senderUuid, float voltage, float current, float soc, uint8_t temperature) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)25 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // voltage
+    memcpy(&floatBits, &voltage, 4);
+    valueInPos = (uint64_t)floatBits << 16;
+    contents |= valueInPos;
+
+    // current
+    memcpy(&floatBits, &current, 4);
+    valueInPos = (uint64_t)floatBits << 32;
+    contents |= valueInPos;
+
+    // soc
+    memcpy(&floatBits, &soc, 4);
+    valueInPos = (uint64_t)floatBits << 48;
+    contents |= valueInPos;
+
+    // temperature
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)temperature & sizeMask) << 56;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Request power status
+inline static CANPacket_t CANPowerPacket_GetPowerStatus(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)26 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Emergency stop
+inline static CANPacket_t CANUniversalPacket_EStop(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)0 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Indicates to the device that the sender is active, with device specific state information
+inline static CANPacket_t CANUniversalPacket_HeartBeat(CANDevice_t device, uint8_t senderUuid, uint32_t error, uint8_t state) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)2 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // error
+    sizeMask = ((1ULL << 32) - 1);
+    valueInPos = ((uint64_t)error & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // state
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)state & sizeMask) << 48;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// General acknowledgement which should be sent sent when an ack was requested but no specific acknowledge packet exists
+inline static CANPacket_t CANUniversalPacket_Acknowledge(CANDevice_t device, uint8_t senderUuid, bool failure, uint8_t commandId) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)1 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // failure
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)failure & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // commandId
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)commandId & sizeMask) << 24;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Query the firmware version from the given device. Consists of an unsigned 16-bit int and a string up to 4 bytes long
+inline static CANPacket_t CANUniversalPacket_GetFirmwareVersion(CANDevice_t device, uint8_t senderUuid) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)3 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}
+
+// Firmware version response to CANUniversalPacket_GetFirmwareVersion
+inline static CANPacket_t CANUniversalPacket_FirmwareVersion(CANDevice_t device, uint8_t senderUuid, uint16_t versionId, uint32_t name) {
+    uint64_t contents = 0;
+    uint64_t sizeMask;
+    uint64_t valueInPos;
+    uint32_t floatBits;
+
+    // command
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)4 & sizeMask) << 0;
+    contents |= valueInPos;
+
+    // senderUuid
+    sizeMask = ((1ULL << 8) - 1);
+    valueInPos = ((uint64_t)senderUuid & sizeMask) << 8;
+    contents |= valueInPos;
+
+    // versionId
+    sizeMask = ((1ULL << 16) - 1);
+    valueInPos = ((uint64_t)versionId & sizeMask) << 16;
+    contents |= valueInPos;
+
+    // name
+    sizeMask = ((1ULL << 32) - 1);
+    valueInPos = ((uint64_t)name & sizeMask) << 32;
+    contents |= valueInPos;
+
+    CANPacket_t res = (CANPacket_t){
+        .device = device,
+    };
+    uint8_t* data = &res.command;
+    for (int i = 0; i < 8; i++)
+        data[i] = (uint8_t)(contents >> (8 * i));
+
+    return res;
+}

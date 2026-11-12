@@ -3,6 +3,8 @@
 # YAML keys, where those marked ? are optional:
 # - name: Name of packet
 #   comment?: Human-readable description of packet
+#   ack?: True if this packet sets the acknowledgment bit. Default: false
+#   highPriority?: True if this packet sets the priority bit. Default: false
 #   signals: Array of packet fields
 #     - { name: Signal name,
 #         start: Starting bit index of field,
@@ -16,17 +18,9 @@
 
 version: 0.0.0
 messages:
-  - name: SillyPacket
-    comment: "Test packet definition"
-    commandId: 12
-    signals:
-      - { name: command, start: 0,  size: 8, type: uint }
-      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
-      - { name: A, start: 20, size: 9, type: uint }
-      - { name: B, start: 29, size: 25, type: uint }
-
+  # Motor -------------------------------------------------------------------------------------------------------------
   - name: CANMotorPacket_LimitSwitchAlert
-    comment: Send an update from a limit switch to the given device
+    comment: Send an update from a limit switch
     commandId: 5
     signals:
       - { name: command,      start: 0,  size: 8, type: uint }
@@ -35,13 +29,94 @@ messages:
       - { name: switchStatus, start: 24, size: 8, type: bool }
 
   - name: CANMotorPacket_Stepper_DriveRevolutions
-    comment: Tell a stepper motor to move a given number of revolutions from the current position
+    comment: Tell the stepper motor to move a given number of revolutions from the current position
     commandId: 6
     signals:
       - { name: command,      start: 0,  size: 8, type: uint }
       - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
-      - { name: numRevolutions, start: 16, size: 32, type: float, comment: "Positive: CW; Negative: CCW"}
+      - { name: numRevolutions, start: 16, size: 32, type: float, comment: "Positive: CW; Negative: CCW" }
 
+  - name: CANMotorPacket_BLDC_SetInputMode
+    comment: Set the control mode and input mode of the BLDC motor
+    commandId: 7
+    signals:
+      - { name: command,     start: 0,  size: 8, type: uint }
+      - { name: senderUuid,  start: 8,  size: 8, type: uint, max: 127 }
+      - { name: controlMode, start: 16, size: 8, type: uint }
+      - { name: inputMode,   start: 24, size: 8, type: uint }
+
+  - name: CANMotorPacket_BLDC_SetInputPosition
+    comment: Set the destination position and feed forward velocity of the BLDC motor. Motor should already be in position control mode.
+    commandId: 8
+    signals:
+      - { name: command,             start: 0,  size: 8,  type: uint }
+      - { name: senderUuid,          start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: position,            start: 16, size: 32, type: float, comment: "Units of rev" }
+      - { name: feedForwardVelocity, start: 48, size: 16, type: uint, comment: "Units of 0.001 rev/s" }
+
+  - name: CANMotorPacket_BLDC_SetInputVelocity
+    comment: Set the destination velocity and feed forward torque of the BLDC motor. Motor should already be in velocity control mode.
+    commandId: 9
+    signals:
+      - { name: command,           start: 0,  size: 8,  type: uint }
+      - { name: senderUuid,        start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: velocity,          start: 16, size: 32, type: float, comment: "Units of rev/s" }
+      - { name: feedForwardTorque, start: 48, size: 16, type: float, comment: "Units of Nm" }
+
+  - name: CANMotorPacket_BLDC_DirectWrite
+    comment: Directly write to ODrive registers, setting the endpointId to the given value
+    commandId: 10
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: endpointId, start: 16, size: 16, type: uint }
+      - { name: value,      start: 32, size: 32, type: uint }
+
+  - name: CANMotorPacket_BLDC_DirectRead
+    comment: Request to directly read an ODrive register. Response is CANMotorPacket_BLDC_DirectReadResult
+    commandId: 11
+    ack: true
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: endpointId, start: 16, size: 16, type: uint }
+
+  - name: CANMotorPacket_BLDC_DirectReadResult
+    comment: Response to CANMotorPacket_BLDC_DirectRead. Contains the register value and the endpoint it was read from (to keep ordering if responses get reordered)
+    commandId: 12
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: endpointId, start: 16, size: 16, type: uint }
+      - { name: value,      start: 32, size: 32, type: uint }
+
+  - name: CANMotorPacket_BLDC_GetEncoderEstimates
+    comment: Request encoder estimates from the device. Response is CANMotorPacket_BLDC_EncoderEstimates
+    commandId: 13
+    ack: true
+    signals:
+      - { name: command,    start: 0,  size: 8, type: uint }
+      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
+      - { name: encoderId,  start: 16, size: 8, type: uint }
+
+  - name: CANMotorPacket_BLDC_EncoderEstimates
+    comment: Encoder estimates from a given encoder, sent as a response to CANMotorPacket_BLDC_GetEncoderEstimates
+    commandId: 14
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: position,   start: 16, size: 24, type: float, comment: "Units of rev" }
+      - { name: velocity,   start: 40, size: 24, type: float, comment: "Units of rev/s" }
+
+  - name: CANMotorPacket_BLDC_SetAxisState
+    comment: Set the axis state of an ODrive BLDC
+    commandId: 17
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: axisState,  start: 16, size: 32, type: uint, comment: "One of the BLDC_AXIS_ macros" }
+
+  # Peripheral --------------------------------------------------------------------------------------------------------
   - name: CANPeripheralPacket_SetPWMDutyCycle
     comment: Set the duty cycle of a device
     commandId: 15
@@ -50,3 +125,131 @@ messages:
       - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
       - { name: peripheralId, start: 16, size: 8,  type: uint }
       - { name: dutyCycle,    start: 24, size: 32, type: float, min: 0, max: 100, comment: "Duty cycle, clamped to [0-100]" }
+
+  - name: CANPeripheralPacket_SetLinearActuator
+    comment: Run and set the direction of a linear actuator
+    commandId: 18
+    signals:
+      - { name: command,      start: 0,  size: 8, type: uint }
+      - { name: senderUuid,   start: 8,  size: 8, type: uint, max: 127 }
+      - { name: peripheralId, start: 16, size: 8, type: uint }
+      - { name: drive,        start: 24, size: 8, type: int, comment: "0: stop; +: forwards; -: reverse" }
+
+  - name: CANPeripheralPacket_SetRoverLEDColor
+    comment: Set the color of the rover LED strips
+    commandId: 16
+    signals:
+      - { name: command,    start: 0,  size: 8, type: uint }
+      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
+      - { name: red,        start: 16, size: 8, type: uint }
+      - { name: green,      start: 24, size: 8, type: uint }
+      - { name: blue,       start: 32, size: 8, type: uint }
+
+  - name: CANPeripheralPacket_SetBrakes
+    comment: Set the state of the brake with the given ID
+    commandId: 19
+    signals:
+      - { name: command,    start: 0,  size: 8, type: uint }
+      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
+      - { name: brakeId,    start: 16, size: 8, type: uint }
+      - { name: state,      start: 24, size: 8, type: uint }
+
+  - name: CANPeripheralPacket_SetRoverLEDRed
+    comment: Set the rover LEDs to red
+    commandId: 20
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANPeripheralPacket_SetRoverLEDBlue
+    comment: Set the rover LEDs to blue
+    commandId: 21
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANPeripheralPacket_SetRoverFlashLEDGreen
+    comment: Set the rover LEDs to flashing green
+    commandId: 22
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANPeripheralPacket_SetReset
+    comment: Reset the device
+    commandId: 23
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANPeripheralPacket_SetServoAngle
+    comment: Set the PWM angle of the servo with the given ID
+    commandId: 24
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: servoId,    start: 16, size: 8,  type: uint }
+      - { name: servoAngle, start: 24, size: 24, type: float, min: 0, max: 1, comment: "Units of revolutions [0-1]" }
+
+  # Power -------------------------------------------------------------------------------------------------------------
+  - name: CANPowerPacket_PowerStatus
+    comment: Report the current power status of the device
+    commandId: 25
+    signals:
+      - { name: command,     start: 0,  size: 8,  type: uint }
+      - { name: senderUuid,  start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: voltage,     start: 16, size: 16, type: float, comment: Units of V }
+      - { name: current,     start: 32, size: 16, type: float, comment: Units of A }
+      - { name: soc,         start: 48, size: 8,  type: float, min: 0, max: 1, comment: State of charge; Units of %) }
+      - { name: temperature, start: 56, size: 8,  type: uint, comment: Units of F }
+
+  - name: CANPowerPacket_GetPowerStatus
+    comment: Request power status
+    commandId: 26
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  # Universal ---------------------------------------------------------------------------------------------------------
+  - name: CANUniversalPacket_EStop
+    comment: Emergency stop
+    commandId: 0
+    highPriority: true
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANUniversalPacket_HeartBeat
+    comment: Indicates to the device that the sender is active, with device specific state information
+    commandId: 2
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: error,      start: 16, size: 32, type: uint, comment: "Error state (e.g. bad config, over temp, etc.)" }
+      - { name: state,      start: 48, size: 8,  type: uint, comment: "State of the device (e.g. idle, startup, etc.)" }
+
+  - name: CANUniversalPacket_Acknowledge
+    comment: General acknowledgement which should be sent sent when an ack was requested but no specific acknowledge packet exists
+    commandId: 1
+    signals:
+      - { name: command,    start: 0,  size: 8, type: uint }
+      - { name: senderUuid, start: 8,  size: 8, type: uint, max: 127 }
+      - { name: failure,    start: 16, size: 8, type: bool }
+      - { name: commandId,  start: 24, size: 8, type: uint, comment: "Should not include ack bit" }
+
+  - name: CANUniversalPacket_GetFirmwareVersion
+    comment: Query the firmware version from the given device. Consists of an unsigned 16-bit int and a string up to 4 bytes long
+    commandId: 3
+    ack: true
+    signals:
+      - { name: command,    start: 0, size: 8, type: uint }
+      - { name: senderUuid, start: 8, size: 8, type: uint, max: 127 }
+
+  - name: CANUniversalPacket_FirmwareVersion
+    comment: Firmware version response to CANUniversalPacket_GetFirmwareVersion
+    commandId: 4
+    signals:
+      - { name: command,    start: 0,  size: 8,  type: uint }
+      - { name: senderUuid, start: 8,  size: 8,  type: uint, max: 127 }
+      - { name: versionId,  start: 16, size: 16, type: uint }
+      - { name: name,       start: 32, size: 32, type: uint, comment: "Up to 4 ASCII characters" }
